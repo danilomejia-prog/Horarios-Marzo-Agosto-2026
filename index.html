@@ -1,295 +1,668 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Portal de Horarios CIA 2026</title>
-<style>
-:root {
-  --bg:#f4f7fb; --card:#ffffff; --line:#d7e2ee; --text:#143a61; --muted:#5b728b; --accent:#1f5fa8; --soft:#eaf2fb;
-}
-* { box-sizing:border-box; }
-body { margin:0; font-family: Arial, Helvetica, sans-serif; background:var(--bg); color:var(--text); }
-.container { max-width: 1400px; margin: 0 auto; padding: 22px; }
-.hero {
-  background: linear-gradient(135deg,#0f3b68,#1e67a8); color:#fff; border-radius:20px; padding:26px 28px; margin-bottom:18px;
-  box-shadow: 0 10px 30px rgba(20,58,97,.15);
-}
-.hero h1 { margin:0 0 8px 0; font-size:32px; }
-.hero p { margin:0; font-size:16px; opacity:.95; }
-.grid-top { display:grid; grid-template-columns: 1.2fr .9fr; gap:18px; margin-bottom:18px; }
-.card {
-  background:var(--card); border:1px solid var(--line); border-radius:18px; overflow:hidden;
-  box-shadow: 0 8px 20px rgba(20,58,97,.05);
-}
-.card .head { padding:18px 20px; border-bottom:1px solid var(--line); background:#f9fbfe; }
-.card .head h2 { margin:0 0 6px 0; font-size:20px; }
-.card .head p { margin:0; color:var(--muted); }
-.card .body { padding:20px; }
-label { display:block; font-weight:700; margin-bottom:8px; }
-input, select {
-  width:100%; padding:14px 16px; border:1px solid #b9cde2; border-radius:12px; font-size:16px; outline:none; background:#fff;
-}
-input:focus, select:focus { border-color:var(--accent); box-shadow: 0 0 0 3px rgba(31,95,168,.12); }
-.small { color:var(--muted); font-size:13px; margin-top:8px; }
-.badge {
-  display:inline-block; padding:8px 12px; border-radius:999px; background:var(--soft); color:var(--accent); font-weight:700; font-size:13px;
-}
-.result-grid { display:grid; grid-template-columns: 1fr 1.25fr; gap:18px; margin-bottom:18px; }
-.list { margin:0; padding-left:22px; }
-.list li { margin:8px 0; }
-.teacher-name { font-size:24px; font-weight:800; margin:14px 0 8px; }
-.note { padding:14px 16px; border:1px dashed #c7d6e6; border-radius:14px; background:#fbfdff; color:var(--muted); }
-.schedule-wrap { overflow:auto; }
-table { width:100%; border-collapse:collapse; }
-th, td { border-bottom:1px solid #e3edf7; padding:11px 10px; text-align:left; vertical-align:top; }
-th { background:#f7fbff; position:sticky; top:0; z-index:1; }
-.slot {
-  border:1px solid #dbe7f4; border-radius:12px; padding:8px 9px; background:#fbfdff; min-width:150px;
-}
-.slot strong { display:block; font-size:13px; margin-bottom:3px; }
-.slot .room { color:var(--muted); font-size:12px; }
-.slot .teacher { color:#325b86; font-size:12px; margin-top:4px; }
-.empty { color:#9bb0c5; }
-.toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
-button {
-  border:none; background:var(--accent); color:#fff; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:700;
-}
-button.secondary { background:#edf4fc; color:var(--text); border:1px solid var(--line); }
-.footer { color:var(--muted); font-size:13px; padding:8px 2px 18px; }
-@media (max-width: 980px) {
-  .grid-top, .result-grid { grid-template-columns: 1fr; }
-  .hero h1 { font-size:26px; }
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal de Horarios CIA 2026</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #12304a;
+      --muted: #5d7388;
+      --line: #d7e2ec;
+      --brand: #0f4c81;
+      --brand-2: #1f7a8c;
+      --soft: #eef5fb;
+      --chip: #e8f1f8;
+      --shadow: 0 10px 28px rgba(16, 48, 74, 0.08);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #f7f9fc 0%, #eef4f9 100%);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .hero {
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+      color: white;
+      border-radius: 26px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+    .hero p {
+      margin: 0;
+      line-height: 1.5;
+      color: rgba(255,255,255,.92);
+      max-width: 850px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .stat {
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 18px;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+    .stat .n {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .section {
+      margin-top: 20px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfdff;
+      flex-wrap: wrap;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    input, select, button {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 13px;
+      font-size: 14px;
+      background: white;
+      color: var(--text);
+    }
+    input, select { min-width: 200px; }
+    button {
+      background: var(--brand);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.secondary {
+      background: white;
+      color: var(--brand);
+      border: 1px solid var(--line);
+    }
+    .section-body { padding: 18px 20px 22px; }
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+    }
+    .level-card {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
+      border-radius: 18px;
+      padding: 16px;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+    .level-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+      border-color: #b9d0e3;
+    }
+    .chip {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--chip);
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .muted { color: var(--muted); }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1.45fr;
+      gap: 16px;
+    }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: white;
+    }
+    .panel h3 {
+      margin: 0;
+      padding: 14px 16px;
+      font-size: 18px;
+      background: var(--soft);
+      border-bottom: 1px solid var(--line);
+    }
+    .panel .panel-body { padding: 14px 16px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #edf2f7;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+      color: var(--muted);
+      background: #fcfdff;
+      position: sticky;
+      top: 0;
+    }
+    .table-wrap {
+      max-height: 520px;
+      overflow: auto;
+    }
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: 120px repeat(6, minmax(110px, 1fr));
+      gap: 8px;
+      align-items: stretch;
+    }
+    .sched-head, .sched-time, .sched-cell {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: white;
+      min-height: 70px;
+    }
+    .sched-head {
+      min-height: auto;
+      background: var(--soft);
+      font-weight: 700;
+      text-align: center;
+    }
+    .sched-time {
+      background: #fbfdff;
+      font-weight: 700;
+      color: var(--brand);
+      display: flex;
+      align-items: center;
+    }
+    .sched-cell.empty {
+      background: #fafcff;
+    }
+    .course {
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 1.3;
+      margin-bottom: 5px;
+    }
+    .room {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+    .teacher-result {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 16px;
+    }
+    .teacher-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
+    }
+    .teacher-card h3 {
+      margin: 0 0 6px;
+      font-size: 24px;
+    }
+    .teacher-card ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+    }
+    .teacher-card li { margin-bottom: 8px; }
+    .day-filter {
+      margin: 0 0 12px;
+    }
+    .day-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+    }
+    .day-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: white;
+    }
+    .day-card h4 {
+      margin: 0 0 12px;
+      color: var(--brand);
+      font-size: 16px;
+    }
+    .slot {
+      border-top: 1px dashed #dde7ef;
+      padding: 10px 0;
+    }
+    .slot:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+    .slot-time { font-weight: 700; font-size: 13px; }
+    .empty-state {
+      border: 1px dashed #c8d8e6;
+      background: #f9fbfd;
+      border-radius: 16px;
+      padding: 18px;
+      color: var(--muted);
+    }
+    .footer {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 18px 4px 4px;
+      text-align: center;
+    }
+    @media (max-width: 980px) {
+      .detail-grid, .teacher-result {
+        grid-template-columns: 1fr;
+      }
+      .schedule-grid {
+        display: block;
+      }
+      .sched-head {
+        display: none;
+      }
+      .sched-row {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        margin-bottom: 12px;
+        background: white;
+        overflow: hidden;
+      }
+      .sched-time {
+        border: none;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+      }
+      .sched-mobile-day {
+        padding: 10px 12px 4px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .sched-cell {
+        border: none;
+        border-top: 1px solid #eef2f6;
+        border-radius: 0;
+        min-height: auto;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <section class="hero">
-    <h1>Portal de Horarios CIA 2026</h1>
-    <p>Consulta rápida por docente o por nivel. Esta versión corrige la consolidación de nombres y mejora la identificación de horarios.</p>
-  </section>
-
-  <section class="grid-top">
-    <div class="card">
-      <div class="head">
-        <h2>Búsqueda por docente</h2>
-        <p>Escriba apellido o nombre. La búsqueda ignora tildes y unifica títulos como PHD y MGT.</p>
-      </div>
-      <div class="body">
-        <label for="teacherSearch">Docente</label>
-        <input id="teacherSearch" list="teacherOptions" placeholder="Ejemplo: ALBUJA, MEJIA, JESSICA..." />
-        <datalist id="teacherOptions"></datalist>
-        <div class="small">Consejo: puede escribir una parte del apellido para encontrar más rápido.</div>
+  <div class="wrap">
+    <div class="hero">
+      <h1>Portal de Horarios CIA 2026</h1>
+      <p>Consulta rápida para docentes de la Carrera de Ingeniería Ambiental. Permite revisar horarios por nivel o por docente desde celular o computadora, en cualquier momento.</p>
+      <div class="stats">
+        <div class="stat"><div class="n" id="stat-levels">0</div><div>Niveles disponibles</div></div>
+        <div class="stat"><div class="n" id="stat-teachers">0</div><div>Docentes identificados</div></div>
+        <div class="stat"><div class="n" id="stat-courses">0</div><div>Asignaturas registradas</div></div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="head">
-        <h2>Consulta por nivel</h2>
-        <p>Seleccione un nivel para revisar el horario completo.</p>
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Búsqueda rápida de docente</h2>
+          <p>Escribe o selecciona un docente para revisar de inmediato sus asignaturas y horarios asociados.</p>
+        </div>
+        <div class="controls">
+          <input type="text" id="teacher-search" placeholder="Escribe el nombre del docente..." />
+          <select id="teacher-select"></select>
+          <button id="btn-clear-teacher" class="secondary">Limpiar</button>
+        </div>
       </div>
-      <div class="body">
-        <label for="levelSelect">Nivel</label>
-        <select id="levelSelect"></select>
-        <div class="small">La vista por nivel muestra las franjas horarias completas y el docente asociado cuando pudo identificarse.</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Consulta por nivel</h2>
+          <p>Selecciona un nivel para ver asignaturas, docentes y horario semanal completo.</p>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <section class="result-grid">
-    <div class="card">
-      <div class="head">
-        <h2>Resultado de consulta por docente</h2>
-        <p>Detalle consolidado del docente seleccionado.</p>
+      <div class="section-body">
+        <div class="level-grid" id="level-grid"></div>
+        <div id="level-detail" style="margin-top:16px;"></div>
       </div>
-      <div class="body" id="teacherSummary"></div>
-    </div>
+    </section>
 
-    <div class="card">
-      <div class="head">
-        <h2>Horario identificado</h2>
-        <p>Vista organizada por día y hora para revisión rápida desde celular o computador.</p>
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Resultado de consulta por docente</h2>
+          <p>En esta sección se muestra el detalle del docente seleccionado en la parte superior.</p>
+        </div>
       </div>
-      <div class="body" id="teacherSchedule"></div>
-    </div>
-  </section>
+      <div class="section-body">
+        <div id="teacher-detail" class="empty-state">Usa la búsqueda rápida superior para seleccionar un docente y ver el detalle.</div>
+      </div>
+    </section>
 
-  <section class="card">
-    <div class="head">
-      <h2>Horario por nivel</h2>
-      <p>Consulta general del nivel seleccionado.</p>
-    </div>
-    <div class="body" id="levelView"></div>
-  </section>
-
-  <div class="footer">Fuente: horario consolidado CIA 2026. Nota: en Nivel 8 existen bloques de “VISITAS TÉCNICAS” que el archivo fuente no vincula explícitamente a un docente, por lo que se muestran solo en la vista por nivel.</div>
-</div>
+    <div class="footer">Prototipo de consulta web generado a partir del archivo de horario compartido con los docentes.</div>
+  </div>
 
 <script>
-const DATA = {"subjects": [{"subject": "EMISIONES ATMOSFÉRICAS", "teacher": "PHD. DIANA MOSCOSO", "teacher_norm": "PHD DIANA MOSCOSO", "c": 2, "p": 2, "t": 4, "total": 8, "sheet": "Nivel 10", "level": "10"}, {"subject": "EFICIENCIA ENERGÉTICA", "teacher": "PHD. ANDRES MONTERO", "teacher_norm": "PHD ANDRES MONTERO", "c": 2, "p": 2, "t": 4, "total": 8, "sheet": "Nivel 10", "level": "10"}, {"subject": "TITULACIÓN FASE II", "teacher": "MGT. JUAN GUANUCHI", "teacher_norm": "MGT JUAN GUANUCHI", "c": 0, "p": 1, "t": 1, "total": 2, "sheet": "Nivel 10", "level": "10"}, {"subject": "PRÁCTICAS LABORALES", "teacher": "MGT. JESSICA CRIOLLO", "teacher_norm": "MGT JESSICA CRIOLLO", "c": 0, "p": 1, "t": 1, "total": 2, "sheet": "Nivel 10", "level": "10"}], "slots": [{"sheet": "Nivel 10", "level": "Nivel 10", "day": "Viernes", "time": "08:00–09:00", "cell_text": "TITULACIÓN FASE II\nAula: CB-B104", "course_display": "TITULACIÓN FASE II", "room": "CB-B104", "teacher_norm": "MGT JUAN GUANUCHI", "teacher_display": "MGT. JUAN GUANUCHI", "subject": "TITULACIÓN FASE II", "score": 0.868}, {"sheet": "Nivel 10", "level": "Nivel 10", "day": "Jueves", "time": "09:00–10:00", "cell_text": "EMISIONES ATMOSFÉRICAS\nAula: CB-B206", "course_display": "EMISIONES ATMOSFÉRICAS", "room": "CB-B206", "teacher_norm": "PHD DIANA MOSCOSO", "teacher_display": "PHD. DIANA MOSCOSO", "subject": "EMISIONES ATMOSFÉRICAS", "score": 0.896}, {"sheet": "Nivel 10", "level": "Nivel 10", "day": "Viernes", "time": "09:00–10:00", "cell_text": "EFICIENCIA ENERGÉTICA\nAula: CB-B202", "course_display": "EFICIENCIA ENERGÉTICA", "room": "CB-B202", "teacher_norm": "PHD ANDRES MONTERO", "teacher_display": "PHD. ANDRES MONTERO", "subject": "EFICIENCIA ENERGÉTICA", "score": 0.89}, {"sheet": "Nivel 10", "level": "Nivel 10", "day": "Jueves", "time": "10:00–11:00", "cell_text": "EMISIONES ATMOSFÉRICAS\nAula: CB-B206", "course_display": "EMISIONES ATMOSFÉRICAS", "room": "CB-B206", "teacher_norm": "PHD DIANA MOSCOSO", "teacher_display": "PHD. DIANA MOSCOSO", "subject": "EMISIONES ATMOSFÉRICAS", "score": 0.896}, {"sheet": "Nivel 10", "level": "Nivel 10", "day": "Viernes", "time": "10:00–11:00", "cell_text": "EFICIENCIA ENERGÉTICA\nAula: CB-B202", "course_display": "EFICIENCIA ENERGÉTICA", "room": "CB-B202", "teacher_norm": "PHD ANDRES MONTERO", "teacher_display": "PHD. ANDRES MONTERO", "subject": "EFICIENCIA ENERGÉTICA", "score": 0.89}, {"sheet": "Nivel 10", "level": "Nivel 10", "day": "Jueves", "time": "11:00–12:00", "cell_text": "EFICIENCIA ENERGÉTICA\nAula: CB-C104", "course_display": "EFICIENCIA ENERGÉTICA", "room": "CB-C104", "teacher_norm": "PHD ANDRES MONTERO", "teacher_display": "PHD. ANDRES MONTERO", "subject": "EFICIENCIA ENERGÉTICA", "score": 0.89}, {"sheet": "Nivel 10", "level": "Nivel 10", "day": "Viernes", "time": "11:00–12:00", "cell_text": "EMISIONES ATMOSFÉRICAS\nAula: CB-B104", "course_display": "EMISIONES ATMOSFÉRICAS", "room": "CB-B104", "teacher_norm": "PHD DIANA MOSCOSO", "teacher_display": "PHD. DIANA MOSCOSO", "subject": "EMISIONES ATMOSFÉRICAS", "score": 0.896}, {"sheet": "Nivel 10", "level": "Nivel 10", "day": "Miércoles", "time": "12:00–13:00", "cell_text": "PRÁCTICAS LABORALES\nAula: CB-B102", "course_display": "PRÁCTICAS LABORALES", "room": "CB-B102", "teacher_norm": "MGT JESSICA CRIOLLO", "teacher_display": "MGT. JESSICA CRIOLLO", "subject": "PRÁCTICAS LABORALES", "score": 0.876}, {"sheet": "Nivel 10", "level": "Nivel 10", "day": "Jueves", "time": "12:00–13:00", "cell_text": "EFICIENCIA ENERGÉTICA\nAula: CB-C104", "course_display": "EFICIENCIA ENERGÉTICA", "room": "CB-C104", "teacher_norm": "PHD ANDRES MONTERO", "teacher_display": "PHD. ANDRES MONTERO", "subject": "EFICIENCIA ENERGÉTICA", "score": 0.89}, {"sheet": "Nivel 10", "level": "Nivel 10", "day": "Viernes", "time": "12:00–13:00", "cell_text": "EMISIONES ATMOSFÉRICAS\nAula: CB-B104", "course_display": "EMISIONES ATMOSFÉRICAS", "room": "CB-B104", "teacher_norm": "PHD DIANA MOSCOSO", "teacher_display": "PHD. DIANA MOSCOSO", "subject": "EMISIONES ATMOSFÉRICAS", "score": 0.896}]};
+const DATA = {"summary": {"levels": 11, "teachers": 51, "courses": 77}, "levels": [{"sheet": "Nivel 1A", "title": "Horario de clases · PRIMER NIVEL A", "block": "1A", "courses": [{"subject": "CÁLCULO DIFERENCIAL", "teacher": "PHD. LOURDES JARA", "hours_c": 3, "hours_p": 3, "hours_t": null, "total": 6}, {"subject": "PRACT CÁLCULO DIFERENCIAL G2", "teacher": "MGT. BOLIVAR BERNAL", "hours_c": null, "hours_p": 3, "hours_t": null, "total": 3}, {"subject": "ALGEBRA LINEAL", "teacher": "MGT. JESSICA CRIOLLO", "hours_c": 3, "hours_p": 6, "hours_t": null, "total": 9}, {"subject": "BIOLOGIA", "teacher": "PHD. DANILO MEJIA", "hours_c": 2, "hours_p": 1, "hours_t": null, "total": 3}, {"subject": "DIBUJO ASISTIDO POR COMPUTADOR", "teacher": "MGT. DANIEL ZAMBRANO", "hours_c": 2, "hours_p": 2, "hours_t": null, "total": 4}, {"subject": "QUIMICA GENERAL", "teacher": "PHD. DIANA MOSCOSO", "hours_c": 2, "hours_p": null, "hours_t": null, "total": 2}, {"subject": "PRACT QUIMICA GENERAL G1 G2", "teacher": "MGT. MONICA NARVAEZ", "hours_c": null, "hours_p": 4, "hours_t": null, "total": 4}, {"subject": "FISICA I", "teacher": "MGT. EDGAR VIVAR", "hours_c": 3, "hours_p": 3, "hours_t": null, "total": 6}], "schedule": [{"time": "07:00–08:00", "slots": {"Lunes": {"text": "FISICA I\nAula: CB-C001", "subject": "FISICA I", "room": "CB-C001"}, "Martes": {"text": "ALGEBRA LINEAL\nAula: CB-C001", "subject": "ALGEBRA LINEAL", "room": "CB-C001"}, "Jueves": {"text": "PRAC ALGEBRA LINEAL G1\nAula: CB-C001", "subject": "PRAC ALGEBRA LINEAL G1", "room": "CB-C001"}, "Viernes": {"text": "DIBUJO ASISTIDO POR COMPUTADOR\nAula: CENTRO DE COMPUTO", "subject": "DIBUJO ASISTIDO POR COMPUTADOR", "room": "CENTRO DE COMPUTO"}}}, {"time": "08:00–09:00", "slots": {"Lunes": {"text": "FISICA I\nAula: CB-C001", "subject": "FISICA I", "room": "CB-C001"}, "Martes": {"text": "ALGEBRA LINEAL\nAula: CB-C001", "subject": "ALGEBRA LINEAL", "room": "CB-C001"}, "Jueves": {"text": "PRAC ALGEBRA LINEAL G1\nAula: CB-C001", "subject": "PRAC ALGEBRA LINEAL G1", "room": "CB-C001"}, "Viernes": {"text": "DIBUJO ASISTIDO POR COMPUTADOR\nAula: CENTRO DE COMPUTO", "subject": "DIBUJO ASISTIDO POR COMPUTADOR", "room": "CENTRO DE COMPUTO"}}}, {"time": "09:00–10:00", "slots": {"Lunes": {"text": "BIOLOGIA DEL MEDIO AMBIENTE\nAula: CB-C001", "subject": "BIOLOGIA DEL MEDIO AMBIENTE", "room": "CB-C001"}, "Martes": {"text": "ALGEBRA LINEAL\nAula: CB-C001", "subject": "ALGEBRA LINEAL", "room": "CB-C001"}, "Miércoles": {"text": "PRAC ALGEBRA LINEAL G2\nAula: CB-C001", "subject": "PRAC ALGEBRA LINEAL G2", "room": "CB-C001"}, "Jueves": {"text": "PRAC ALGEBRA LINEAL G1\nAula: CB-C001", "subject": "PRAC ALGEBRA LINEAL G1", "room": "CB-C001"}, "Viernes": {"text": "PRÁCT. CÁLCULO DIFERENCIAL G1\nAula: CB-C001", "subject": "PRÁCT. CÁLCULO DIFERENCIAL G1", "room": "CB-C001"}}}, {"time": "10:00–11:00", "slots": {"Lunes": {"text": "BIOLOGIA DEL MEDIO AMBIENTE\nAula: CB-C001", "subject": "BIOLOGIA DEL MEDIO AMBIENTE", "room": "CB-C001"}, "Martes": {"text": "PRÁCT. CÁLCULO DIFERENCIAL G2\nAula: CB-C001", "subject": "PRÁCT. CÁLCULO DIFERENCIAL G2", "room": "CB-C001"}, "Miércoles": {"text": "PRAC ALGEBRA LINEAL G2\nAula: CB-C001", "subject": "PRAC ALGEBRA LINEAL G2", "room": "CB-C001"}, "Jueves": {"text": "PRACT. BIOLOGIA DEL MEDIO AMBIENTE\nAula: CB-C001", "subject": "PRACT. BIOLOGIA DEL MEDIO AMBIENTE", "room": "CB-C001"}, "Viernes": {"text": "PRÁCT. CÁLCULO DIFERENCIAL G1\nAula: CB-C001", "subject": "PRÁCT. CÁLCULO DIFERENCIAL G1", "room": "CB-C001"}}}, {"time": "11:00–12:00", "slots": {"Lunes": {"text": "CÁLCULO DIFERENCIAL\nAula: CB-C001", "subject": "CÁLCULO DIFERENCIAL", "room": "CB-C001"}, "Martes": {"text": "PRAC ALGEBRA LINEAL G2\nAula: CB-C001", "subject": "PRAC ALGEBRA LINEAL G2", "room": "CB-C001"}, "Miércoles": {"text": "QUIMICA GENERAL\nAula: CB-C001", "subject": "QUIMICA GENERAL", "room": "CB-C001"}, "Jueves": {"text": "CÁLCULO DIFERENCIAL\nAula: CB-C001", "subject": "CÁLCULO DIFERENCIAL", "room": "CB-C001"}, "Viernes": {"text": "PRÁCT. CÁLCULO DIFERENCIAL G2\nAula: CB-C001", "subject": "PRÁCT. CÁLCULO DIFERENCIAL G2", "room": "CB-C001"}}}, {"time": "12:00–13:00", "slots": {"Lunes": {"text": "CÁLCULO DIFERENCIAL\nAula: CB-C001", "subject": "CÁLCULO DIFERENCIAL", "room": "CB-C001"}, "Martes": {"text": "FISICA I\nAula: CB-C001", "subject": "FISICA I", "room": "CB-C001"}, "Miércoles": {"text": "QUIMICA GENERAL\nAula: CB-C001", "subject": "QUIMICA GENERAL", "room": "CB-C001"}, "Jueves": {"text": "PRÁCT. CÁLCULO DIFERENCIAL G1\nAula: CB-C001", "subject": "PRÁCT. CÁLCULO DIFERENCIAL G1", "room": "CB-C001"}, "Viernes": {"text": "PRÁCT. CÁLCULO DIFERENCIAL G2\nAula: CB-C001", "subject": "PRÁCT. CÁLCULO DIFERENCIAL G2", "room": "CB-C001"}}}, {"time": "13:00–14:00", "slots": {}}, {"time": "14:00–15:00", "slots": {"Lunes": {"text": "DIBUJO ASISTIDO POR COMPUTADOR\nAula: CB-C004", "subject": "DIBUJO ASISTIDO POR COMPUTADOR", "room": "CB-C004"}, "Martes": {"text": "PRACT. FISICA I\nAula: CB CB-C104", "subject": "PRACT. FISICA I", "room": "CB CB-C104"}, "Miércoles": {"text": "QUIM. GEN PRACT G1\nAula: CC-C105", "subject": "QUIM. GEN PRACT G1", "room": "CC-C105"}}}, {"time": "15:00–16:00", "slots": {"Lunes": {"text": "DIBUJO ASISTIDO POR COMPUTADOR\nAula: CB-C004", "subject": "DIBUJO ASISTIDO POR COMPUTADOR", "room": "CB-C004"}, "Martes": {"text": "PRACT. FISICA I\nAula: CB CB-C104", "subject": "PRACT. FISICA I", "room": "CB CB-C104"}, "Miércoles": {"text": "QUIM. GEN PRACT G1\nAula: CC-C105", "subject": "QUIM. GEN PRACT G1", "room": "CC-C105"}}}, {"time": "16:00–17:00", "slots": {"Martes": {"text": "PRACT. FISICA I\nAula: CB CB-C104", "subject": "PRACT. FISICA I", "room": "CB CB-C104"}, "Miércoles": {"text": "QUIM. GEN PRACT G2\nAula: CC-C105", "subject": "QUIM. GEN PRACT G2", "room": "CC-C105"}}}, {"time": "17:00–18:00", "slots": {"Miércoles": {"text": "QUIM. GEN PRACT G2\nAula: CC-C105", "subject": "QUIM. GEN PRACT G2", "room": "CC-C105"}}}, {"time": "18:00–19:00", "slots": {}}, {"time": "19:00–20:00", "slots": {}}, {"time": "20:00–21:00", "slots": {}}]}, {"sheet": "Nivel 1B", "title": "Horario de clases · PRIMER NIVEL B", "block": "1B", "courses": [{"subject": "CÁLCULO DIFERENCIAL", "teacher": "MGT. MONICA ABRIL", "hours_c": 3, "hours_p": 3, "hours_t": null, "total": 6}, {"subject": "ALGEBRA LINEAL", "teacher": "MGT. DANIEL ZAMBRANO", "hours_c": 3, "hours_p": 3, "hours_t": null, "total": 6}, {"subject": "QUIMICA GENERAL", "teacher": "MGT. MONICA NARVAEZ", "hours_c": 2, "hours_p": 4, "hours_t": null, "total": 6}, {"subject": "FISICA I", "teacher": "MGT. MATEO PATINO", "hours_c": 3, "hours_p": 3, "hours_t": null, "total": 6}], "schedule": [{"time": "07:00–08:00", "slots": {}}, {"time": "08:00–09:00", "slots": {"Viernes": {"text": "QUIM. GEN PRACT G1\nAula: CC-C105", "subject": "QUIM. GEN PRACT G1", "room": "CC-C105"}}}, {"time": "09:00–10:00", "slots": {"Viernes": {"text": "QUIM. GEN PRACT G1\nAula: CC-C105", "subject": "QUIM. GEN PRACT G1", "room": "CC-C105"}}}, {"time": "10:00–11:00", "slots": {"Lunes": {"text": "CÁLCULO DIFERENCIAL\nAula: CB-B005", "subject": "CÁLCULO DIFERENCIAL", "room": "CB-B005"}, "Viernes": {"text": "QUIM. GEN PRACT G2\nAula: CC-C105", "subject": "QUIM. GEN PRACT G2", "room": "CC-C105"}}}, {"time": "11:00–12:00", "slots": {"Lunes": {"text": "CÁLCULO DIFERENCIAL\nAula: CB-B005", "subject": "CÁLCULO DIFERENCIAL", "room": "CB-B005"}, "Miércoles": {"text": "QUIMICA GENERAL\nAula: CB-B005", "subject": "QUIMICA GENERAL", "room": "CB-B005"}, "Viernes": {"text": "QUIM. GEN PRACT G2\nAula: CC-C105", "subject": "QUIM. GEN PRACT G2", "room": "CC-C105"}}}, {"time": "12:00–13:00", "slots": {"Lunes": {"text": "CÁLCULO DIFERENCIAL\nAula: CB-B005", "subject": "CÁLCULO DIFERENCIAL", "room": "CB-B005"}, "Miércoles": {"text": "QUIMICA GENERAL\nAula: CB-B005", "subject": "QUIMICA GENERAL", "room": "CB-B005"}}}, {"time": "13:00–14:00", "slots": {}}, {"time": "14:00–15:00", "slots": {"Lunes": {"text": "FISICA I\nAula: CB-B205", "subject": "FISICA I", "room": "CB-B205"}, "Miércoles": {"text": "PRAC ALGEBRA LINEAL\nAula: CB-B005", "subject": "PRAC ALGEBRA LINEAL", "room": "CB-B005"}, "Jueves": {"text": "FISICA I\nAula: CB-B005", "subject": "FISICA I", "room": "CB-B005"}, "Viernes": {"text": "ALGEBRA LINEAL\nAula: CB-B005", "subject": "ALGEBRA LINEAL", "room": "CB-B005"}}}, {"time": "15:00–16:00", "slots": {"Lunes": {"text": "FISICA I\nAula: CB-B205", "subject": "FISICA I", "room": "CB-B205"}, "Martes": {"text": "PRAC. CÁLCULO DIFERENCIAL\nAula: CB-B005", "subject": "PRAC. CÁLCULO DIFERENCIAL", "room": "CB-B005"}, "Miércoles": {"text": "PRAC ALGEBRA LINEAL\nAula: CB-B005", "subject": "PRAC ALGEBRA LINEAL", "room": "CB-B005"}, "Jueves": {"text": "PRAC. FISICA I\nAula: CB-B005", "subject": "PRAC. FISICA I", "room": "CB-B005"}, "Viernes": {"text": "ALGEBRA LINEAL\nAula: CB-B005", "subject": "ALGEBRA LINEAL", "room": "CB-B005"}}}, {"time": "16:00–17:00", "slots": {"Lunes": {"text": "FISICA I\nAula: CB-B205", "subject": "FISICA I", "room": "CB-B205"}, "Martes": {"text": "PRAC. CÁLCULO DIFERENCIAL\nAula: CB-B005", "subject": "PRAC. CÁLCULO DIFERENCIAL", "room": "CB-B005"}, "Miércoles": {"text": "PRAC ALGEBRA LINEAL\nAula: CB-B005", "subject": "PRAC ALGEBRA LINEAL", "room": "CB-B005"}, "Jueves": {"text": "PRAC. FISICA I\nAula: CB-B005", "subject": "PRAC. FISICA I", "room": "CB-B005"}, "Viernes": {"text": "ALGEBRA LINEAL\nAula: CB-B005", "subject": "ALGEBRA LINEAL", "room": "CB-B005"}}}, {"time": "17:00–18:00", "slots": {"Martes": {"text": "PRAC. CÁLCULO DIFERENCIAL\nAula: CB-B005", "subject": "PRAC. CÁLCULO DIFERENCIAL", "room": "CB-B005"}}}, {"time": "18:00–19:00", "slots": {}}, {"time": "19:00–20:00", "slots": {}}, {"time": "20:00–21:00", "slots": {}}]}, {"sheet": "Nivel 2", "title": "Horario de clases · SEGUNDO NIVEL", "block": "2", "courses": [{"subject": "CÁLCULO INTEGRAL", "teacher": "PHD. LOURDES JARA", "hours_c": 3, "hours_p": 3, "hours_t": 6, "total": 12}, {"subject": "QUÍMICA ORGÁNICA AMBIENTAL", "teacher": "MGT. DANIELA ALBUJA", "hours_c": 2, "hours_p": 4, "hours_t": 6, "total": 12}, {"subject": "FÍSICA II", "teacher": "MGT. EDGAR VIVAR", "hours_c": 3, "hours_p": 3, "hours_t": 6, "total": 12}, {"subject": "QUÍMICA ANALÍTICA", "teacher": "MGT. FERNANDA UGUNA", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "MICROBIOLOGÍA AMBIENTAL", "teacher": "MGT. JUAN CARLOS GUANUCHI", "hours_c": 2, "hours_p": 1, "hours_t": 3, "total": 6}, {"subject": "INTRODUCCIÓN A LA ING. AMBIENTAL", "teacher": "PHD RUBEN JERVES", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "REALIDAD AMB NAC Y MUNDIAL", "teacher": "MGT. MARIA ELISA DURAN", "hours_c": 1, "hours_p": 1, "hours_t": 2, "total": 4}], "schedule": [{"time": "07:00–08:00", "slots": {"Lunes": {"text": "MICROBIOLOGÍA AMBIENTAL\nAula: CB-B101", "subject": "MICROBIOLOGÍA AMBIENTAL", "room": "CB-B101"}, "Martes": {"text": "FISICA II\nAula: CB-B101", "subject": "FISICA II", "room": "CB-B101"}}}, {"time": "08:00–09:00", "slots": {"Lunes": {"text": "MICROBIOLOGÍA AMBIENTAL\nAula: CB-B101", "subject": "MICROBIOLOGÍA AMBIENTAL", "room": "CB-B101"}, "Martes": {"text": "FÍSICA II\nAula: CB-B101", "subject": "FÍSICA II", "room": "CB-B101"}}}, {"time": "09:00–10:00", "slots": {"Lunes": {"text": "CÁLC INTEGRAL\nAula: CB-B101", "subject": "CÁLC INTEGRAL", "room": "CB-B101"}, "Martes": {"text": "FÍSICA II\nAula: CB-B101", "subject": "FÍSICA II", "room": "CB-B101"}, "Miércoles": {"text": "REALIDAD AMB NAC Y MUNDIAL\nAula: CB-B101", "subject": "REALIDAD AMB NAC Y MUNDIAL", "room": "CB-B101"}, "Jueves": {"text": "PRÁCT. QUÍM ORG AMB G1\nAula: CC- LAB 114", "subject": "PRÁCT. QUÍM ORG AMB G1", "room": "CC- LAB 114"}}}, {"time": "10:00–11:00", "slots": {"Lunes": {"text": "CÁLC INTEGRAL\nAula: CB-B101", "subject": "CÁLC INTEGRAL", "room": "CB-B101"}, "Martes": {"text": "QUÍM. ORG. AMB\nAula: CB-B101", "subject": "QUÍM. ORG. AMB", "room": "CB-B101"}, "Miércoles": {"text": "PRACT. REALIDAD AMB NAL Y MUNDIAL\nAula: CB-B101", "subject": "PRACT. REALIDAD AMB NAL Y MUNDIAL", "room": "CB-B101"}, "Jueves": {"text": "PRÁCT. QUÍM ORG AMB G1\nAula: CC- LAB 114", "subject": "PRÁCT. QUÍM ORG AMB G1", "room": "CC- LAB 114"}}}, {"time": "11:00–12:00", "slots": {"Martes": {"text": "QUÍM. ORG. AMB\nAula: CB-B101", "subject": "QUÍM. ORG. AMB", "room": "CB-B101"}, "Miércoles": {"text": "QUIMICA ANALITICA\nAula: CB-B101", "subject": "QUIMICA ANALITICA", "room": "CB-B101"}, "Jueves": {"text": "PRÁCT. QUÍM ORG AMB G2\nAula: CC- LAB 114", "subject": "PRÁCT. QUÍM ORG AMB G2", "room": "CC- LAB 114"}, "Viernes": {"text": "PRAC. QUIMICA ANALITICA\nAula: LAB. AMB. / CB-B101", "subject": "PRAC. QUIMICA ANALITICA", "room": "LAB. AMB. / CB-B101"}}}, {"time": "12:00–13:00", "slots": {"Martes": {"text": "PRACT. MICROBIOLOGÍA AMBIENTAL G1\nAula: LAB AMB /CB-B101", "subject": "PRACT. MICROBIOLOGÍA AMBIENTAL G1", "room": "LAB AMB /CB-B101"}, "Miércoles": {"text": "QUIMICA ANALITICA\nAula: CB-B101", "subject": "QUIMICA ANALITICA", "room": "CB-B101"}, "Jueves": {"text": "PRÁCT. QUÍM ORG AMB G2\nAula: CC- LAB 114", "subject": "PRÁCT. QUÍM ORG AMB G2", "room": "CC- LAB 114"}, "Viernes": {"text": "PRAC. QUIMICA ANALITICA\nAula: LAB. AMB. / CB-B101", "subject": "PRAC. QUIMICA ANALITICA", "room": "LAB. AMB. / CB-B101"}}}, {"time": "13:00–14:00", "slots": {}}, {"time": "14:00–15:00", "slots": {"Lunes": {"text": "INTROD. A LA ING. AMBIENTAL\nAula: CB-B101", "subject": "INTROD. A LA ING. AMBIENTAL", "room": "CB-B101"}, "Martes": {"text": "INTROD. A LA ING. AMBIENTAL\nAula: CB-B101", "subject": "INTROD. A LA ING. AMBIENTAL", "room": "CB-B101"}, "Miércoles": {"text": "PRÁCT. FÍSICA II\nAula: CB-C001", "subject": "PRÁCT. FÍSICA II", "room": "CB-C001"}}}, {"time": "15:00–16:00", "slots": {"Lunes": {"text": "INTROD. A LA ING. AMBIENTAL\nAula: CB-B101", "subject": "INTROD. A LA ING. AMBIENTAL", "room": "CB-B101"}, "Martes": {"text": "PRÁCT CÁLC INT\nAula: CB-B101", "subject": "PRÁCT CÁLC INT", "room": "CB-B101"}, "Miércoles": {"text": "PRÁCT. FÍSICA II\nAula: CB-C001", "subject": "PRÁCT. FÍSICA II", "room": "CB-C001"}, "Jueves": {"text": "PRÁCT CÁLC INT\nAula: CB-C107", "subject": "PRÁCT CÁLC INT", "room": "CB-C107"}}}, {"time": "16:00–17:00", "slots": {"Lunes": {"text": "INTROD. A LA ING. AMBIENTAL\nAula: CB-B101", "subject": "INTROD. A LA ING. AMBIENTAL", "room": "CB-B101"}, "Martes": {"text": "PRÁCT CÁLC INT\nAula: CB-B101", "subject": "PRÁCT CÁLC INT", "room": "CB-B101"}, "Miércoles": {"text": "PRÁCT. FÍSICA II\nAula: CB-C001", "subject": "PRÁCT. FÍSICA II", "room": "CB-C001"}, "Jueves": {"text": "CÁLC INTEGRAL\nAula: CB-C107", "subject": "CÁLC INTEGRAL", "room": "CB-C107"}}}, {"time": "17:00–18:00", "slots": {}}, {"time": "18:00–19:00", "slots": {}}, {"time": "19:00–20:00", "slots": {}}, {"time": "20:00–21:00", "slots": {}}]}, {"sheet": "Nivel 3", "title": "Horario de clases · SEGUNDO NIVEL", "block": "3", "courses": [{"subject": "ANALISIS DE DATOS", "teacher": "MGT. MARCO RAMIREZ", "hours_c": 2, "hours_p": 3, "hours_t": 5, "total": 10}, {"subject": "METODOLOGÍA DE INVESTIGACIÓN", "teacher": "PHD OTILIA CORDERO", "hours_c": 1, "hours_p": 1, "hours_t": 2, "total": 4}, {"subject": "HIDRAULICA", "teacher": "PHD ALEX AVILES", "hours_c": 3, "hours_p": 2, "hours_t": 5, "total": 10}, {"subject": "TERMODINAMICA I", "teacher": "PHD GALO CARRILLO", "hours_c": 2, "hours_p": null, "hours_t": 2, "total": 4}, {"subject": "TERMODINAMICA I", "teacher": "MGT ALEXANDRA CRIOLLO", "hours_c": null, "hours_p": 4, "hours_t": 4, "total": 8}, {"subject": "MICROBIOLOGÍA APLICADA", "teacher": "MGT. PABLO JARA", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "LENGUAJES DE PROGRAMACIÓN", "teacher": "MGT. PAUL VANEGAS", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "ECUACIONES DIFERENCIALES", "teacher": "MGT. CARLOS SANCHEZ", "hours_c": 3, "hours_p": 3, "hours_t": 6, "total": 12}], "schedule": [{"time": "07:00–08:00", "slots": {"Lunes": {"text": "PRAC. HIDRAULICA\nAula: CB-B103", "subject": "PRAC. HIDRAULICA", "room": "CB-B103"}, "Martes": {"text": "ANALISIS DE DATOS\nAula: CB-B103", "subject": "ANALISIS DE DATOS", "room": "CB-B103"}}}, {"time": "08:00–09:00", "slots": {"Lunes": {"text": "PRAC. HIDRAULICA\nAula: CB-B103", "subject": "PRAC. HIDRAULICA", "room": "CB-B103"}, "Martes": {"text": "ANALISIS DE DATOS\nAula: CB-B103", "subject": "ANALISIS DE DATOS", "room": "CB-B103"}}}, {"time": "09:00–10:00", "slots": {"Lunes": {"text": "ECUACIONES DIFERENCIALES\nAula: CB-B103", "subject": "ECUACIONES DIFERENCIALES", "room": "CB-B103"}, "Martes": {"text": "TERMODINAMICA I\nAula: CB-B103", "subject": "TERMODINAMICA I", "room": "CB-B103"}, "Jueves": {"text": "PRACT ECUACIONES DIFERENCIALES\nAula: CB-B103", "subject": "PRACT ECUACIONES DIFERENCIALES", "room": "CB-B103"}}}, {"time": "10:00–11:00", "slots": {"Lunes": {"text": "ECUACIONES DIFERENCIALES\nAula: CB-B103", "subject": "ECUACIONES DIFERENCIALES", "room": "CB-B103"}, "Martes": {"text": "TERMODINAMICA I\nAula: CB-B103", "subject": "TERMODINAMICA I", "room": "CB-B103"}, "Miércoles": {"text": "HIDRAULICA\nAula: CB-B103", "subject": "HIDRAULICA", "room": "CB-B103"}, "Jueves": {"text": "PRACT ECUACIONES DIFERENCIALES\nAula: CB-B103", "subject": "PRACT ECUACIONES DIFERENCIALES", "room": "CB-B103"}}}, {"time": "11:00–12:00", "slots": {"Lunes": {"text": "MICROBIOLOGIA APLICADA\nAula: CB-B103", "subject": "MICROBIOLOGIA APLICADA", "room": "CB-B103"}, "Martes": {"text": "PRACT ECUACIONES DIFERENCIALES\nAula: CB-B103", "subject": "PRACT ECUACIONES DIFERENCIALES", "room": "CB-B103"}, "Miércoles": {"text": "HIDRAULICA\nAula: CB-B103", "subject": "HIDRAULICA", "room": "CB-B103"}, "Jueves": {"text": "PRAC. TERMODINAMICA I G1\nAula: CT LFQ", "subject": "PRAC. TERMODINAMICA I G1", "room": "CT LFQ"}}}, {"time": "12:00–13:00", "slots": {"Lunes": {"text": "MICROBIOLOGIA APLICADA\nAula: CB-B103", "subject": "MICROBIOLOGIA APLICADA", "room": "CB-B103"}, "Martes": {"text": "ECUACIONES DIFERENCIALES\nAula: CB-B103", "subject": "ECUACIONES DIFERENCIALES", "room": "CB-B103"}, "Miércoles": {"text": "HIDRAULICA\nAula: CB-B103", "subject": "HIDRAULICA", "room": "CB-B103"}, "Jueves": {"text": "PRAC. TERMODINAMICA I G1\nAula: CT LFQ", "subject": "PRAC. TERMODINAMICA I G1", "room": "CT LFQ"}}}, {"time": "13:00–14:00", "slots": {}}, {"time": "14:00–15:00", "slots": {"Lunes": {"text": "PRAC. ANALISIS DE DATOS\nAula: CB-C003", "subject": "PRAC. ANALISIS DE DATOS", "room": "CB-C003"}, "Jueves": {"text": "PRAC. TERMODINAMICA I G2\nAula: CT LFQ", "subject": "PRAC. TERMODINAMICA I G2", "room": "CT LFQ"}}}, {"time": "15:00–16:00", "slots": {"Lunes": {"text": "PRAC. ANALISIS DE DATOS\nAula: CB-C003", "subject": "PRAC. ANALISIS DE DATOS", "room": "CB-C003"}, "Martes": {"text": "METODOLOGÍA DE INVESTIGACIÓN\nAula: CB-B103", "subject": "METODOLOGÍA DE INVESTIGACIÓN", "room": "CB-B103"}, "Miércoles": {"text": "PRAC. MICROBIOLOGIA APLICADA\nAula: LAB AMB", "subject": "PRAC. MICROBIOLOGIA APLICADA", "room": "LAB AMB"}, "Jueves": {"text": "PRAC. TERMODINAMICA I G2\nAula: CT LFQ", "subject": "PRAC. TERMODINAMICA I G2", "room": "CT LFQ"}}}, {"time": "16:00–17:00", "slots": {"Lunes": {"text": "PRAC. ANALISIS DE DATOS\nAula: CB-C003", "subject": "PRAC. ANALISIS DE DATOS", "room": "CB-C003"}, "Martes": {"text": "METODOLOGÍA DE INVESTIGACIÓN\nAula: CB-B103", "subject": "METODOLOGÍA DE INVESTIGACIÓN", "room": "CB-B103"}, "Miércoles": {"text": "PRAC. MICROBIOLOGIA APLICADA\nAula: LAB AMB", "subject": "PRAC. MICROBIOLOGIA APLICADA", "room": "LAB AMB"}}}, {"time": "17:00–18:00", "slots": {"Martes": {"text": "LENGUAJES DE PROGRAMACION\nAula: CB-C003", "subject": "LENGUAJES DE PROGRAMACION", "room": "CB-C003"}, "Miércoles": {"text": "LENGUAJES DE PROGRAMACION\nAula: CB-C003", "subject": "LENGUAJES DE PROGRAMACION", "room": "CB-C003"}}}, {"time": "18:00–19:00", "slots": {"Martes": {"text": "LENGUAJES DE PROGRAMACION\nAula: CB-C003", "subject": "LENGUAJES DE PROGRAMACION", "room": "CB-C003"}, "Miércoles": {"text": "LENGUAJES DE PROGRAMACION\nAula: CB-C003", "subject": "LENGUAJES DE PROGRAMACION", "room": "CB-C003"}}}, {"time": "19:00–20:00", "slots": {}}, {"time": "20:00–21:00", "slots": {}}]}, {"sheet": "Nivel 4", "title": "Horario de clases · CUARTO NIVEL", "block": "4", "courses": [{"subject": "CARTOGRAFÍA Y SIG", "teacher": "PHD DANILO MEJIA", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "TERMODINÁMICA II", "teacher": "MGT. JESSICA CRIOLLO", "hours_c": 2, "hours_p": null, "hours_t": 2, "total": 4}, {"subject": "TERMODINÁMICA II", "teacher": "MGT. ALEXANDRA CRIOLLO", "hours_c": null, "hours_p": 4, "hours_t": 4, "total": 8}, {"subject": "TEOR DISTR Y PROBABILIDAD", "teacher": "MGT. MARCO RAMIREZ", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "MÉTODOS NUMÉRICOS", "teacher": "PHD RUBEN JERVES", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "ECOLOGIA GENERAL", "teacher": "PHD. HENRIETTA HAMPEL", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "OPERACIONES UNITARIAS", "teacher": "MGT. JUAN CARLOS GUANUCHI", "hours_c": 3, "hours_p": null, "hours_t": 3, "total": 6}, {"subject": "PRACT. OPERACIONES UNITARIAS G1 - G2 AULA", "teacher": "MGT. JUAN CARLOS GUANUCHI", "hours_c": null, "hours_p": 4, "hours_t": 4, "total": 8}, {"subject": "PRACT. OPERACIONES UNITARIAS G1 - G2 LAB OP UNITARIAS", "teacher": "MGT. DAMIAN FLORES", "hours_c": null, "hours_p": 4, "hours_t": 4, "total": 8}, {"subject": "PROCESOS INDUSTRIALES", "teacher": "MGT MARIA DOLORE TONON", "hours_c": 2, "hours_p": null, "hours_t": 2, "total": 4}, {"subject": "PROCESOS INDUSTRIALES", "teacher": "MGT MARIA DOLORE TONON", "hours_c": null, "hours_p": 3, "hours_t": 3, "total": 6}], "schedule": [{"time": "07:00–08:00", "slots": {"Lunes": {"text": "TEORIA DE LA DISTRIBUCIÓN Y PROBABILIDAD\nAula: CB-B104", "subject": "TEORIA DE LA DISTRIBUCIÓN Y PROBABILIDAD", "room": "CB-B104"}, "Martes": {"text": "PRAC. PROCESOS INDUSTRIALES\nAula: FABRICA", "subject": "PRAC. PROCESOS INDUSTRIALES", "room": "FABRICA"}, "Miércoles": {"text": "PRAC TEORIA DE LA DISTRIBUCIÓN Y PROBABILIDAD\nAula: CB-C0-07", "subject": "PRAC TEORIA DE LA DISTRIBUCIÓN Y PROBABILIDAD", "room": "CB-C0-07"}, "Jueves": {"text": "PROCESOS INDUSTRIALES\nAula: CB-B006", "subject": "PROCESOS INDUSTRIALES", "room": "CB-B006"}, "Viernes": {"text": "TERMODINAMICA II\nAula: CB-B101", "subject": "TERMODINAMICA II", "room": "CB-B101"}}}, {"time": "08:00–09:00", "slots": {"Lunes": {"text": "TEORIA DE LA DISTRIBUCIÓN Y PROBABILIDAD\nAula: CB-B104", "subject": "TEORIA DE LA DISTRIBUCIÓN Y PROBABILIDAD", "room": "CB-B104"}, "Martes": {"text": "PRAC. PROCESOS INDUSTRIALES\nAula: FABRICA", "subject": "PRAC. PROCESOS INDUSTRIALES", "room": "FABRICA"}, "Miércoles": {"text": "PRAC TEORIA DE LA DISTRIBUCIÓN Y PROBABILIDAD\nAula: CB-C0-07", "subject": "PRAC TEORIA DE LA DISTRIBUCIÓN Y PROBABILIDAD", "room": "CB-C0-07"}, "Jueves": {"text": "PROCESOS INDUSTRIALES\nAula: CB-B006", "subject": "PROCESOS INDUSTRIALES", "room": "CB-B006"}, "Viernes": {"text": "TERMODINAMICA II\nAula: CB-B101", "subject": "TERMODINAMICA II", "room": "CB-B101"}}}, {"time": "09:00–10:00", "slots": {"Lunes": {"text": "ECOLOGIA GENERAL\nAula: CB-B104", "subject": "ECOLOGIA GENERAL", "room": "CB-B104"}, "Miércoles": {"text": "PRAC. OPERACIONES UNITARIAS G1\nAula: CB-B104", "subject": "PRAC. OPERACIONES UNITARIAS G1", "room": "CB-B104"}, "Jueves": {"text": "PRACTICA OPERACIONES UNITARIAS G2\nAula: LAB OP UNIT", "subject": "PRACTICA OPERACIONES UNITARIAS G2", "room": "LAB OP UNIT"}, "Viernes": {"text": "PRAC. OPERACIONES UNITARIAS G2\nAula: CB-B104", "subject": "PRAC. OPERACIONES UNITARIAS G2", "room": "CB-B104"}}}, {"time": "10:00–11:00", "slots": {"Lunes": {"text": "ECOLOGIA GENERAL\nAula: CB-B104", "subject": "ECOLOGIA GENERAL", "room": "CB-B104"}, "Miércoles": {"text": "PRAC. OPERACIONES UNITARIAS G1\nAula: CB-B104", "subject": "PRAC. OPERACIONES UNITARIAS G1", "room": "CB-B104"}, "Jueves": {"text": "PRACTICA OPERACIONES UNITARIAS G2\nAula: LAB OP UNIT", "subject": "PRACTICA OPERACIONES UNITARIAS G2", "room": "LAB OP UNIT"}, "Viernes": {"text": "PRAC. OPERACIONES UNITARIAS G2\nAula: CB-B104", "subject": "PRAC. OPERACIONES UNITARIAS G2", "room": "CB-B104"}}}, {"time": "11:00–12:00", "slots": {"Lunes": {"text": "CARTOGRAFÍA Y SIG\nAula: CB-C004", "subject": "CARTOGRAFÍA Y SIG", "room": "CB-C004"}, "Miércoles": {"text": "ECOLOGIA GENERAL\nAula: CB-B104", "subject": "ECOLOGIA GENERAL", "room": "CB-B104"}, "Jueves": {"text": "PRACTICA OPERACIONES UNITARIAS G1\nAula: LAB OP UNIT", "subject": "PRACTICA OPERACIONES UNITARIAS G1", "room": "LAB OP UNIT"}}}, {"time": "12:00–13:00", "slots": {"Lunes": {"text": "CARTOGRAFÍA Y SIG\nAula: CB-C004", "subject": "CARTOGRAFÍA Y SIG", "room": "CB-C004"}, "Miércoles": {"text": "ECOLOGIA GENERAL\nAula: CB-B104", "subject": "ECOLOGIA GENERAL", "room": "CB-B104"}, "Jueves": {"text": "PRACTICA OPERACIONES UNITARIAS G1\nAula: LAB OP UNIT", "subject": "PRACTICA OPERACIONES UNITARIAS G1", "room": "LAB OP UNIT"}}}, {"time": "13:00–14:00", "slots": {}}, {"time": "14:00–15:00", "slots": {"Lunes": {"text": "PRACTICA TERMODINAMICA G1\nAula: CC LFQ", "subject": "PRACTICA TERMODINAMICA G1", "room": "CC LFQ"}, "Miércoles": {"text": "OPERACIONES UNITARIAS\nAula: CB-B104", "subject": "OPERACIONES UNITARIAS", "room": "CB-B104"}, "Jueves": {"text": "MÉTODOS NUMÉRICOS\nAula: CB-C003", "subject": "MÉTODOS NUMÉRICOS", "room": "CB-C003"}, "Viernes": {"text": "PRAC. MÉTODOS NUMÉRICOS\nAula: CB-C003", "subject": "PRAC. MÉTODOS NUMÉRICOS", "room": "CB-C003"}}}, {"time": "15:00–16:00", "slots": {"Lunes": {"text": "PRACTICA TERMODINAMICA G1\nAula: CC LFQ", "subject": "PRACTICA TERMODINAMICA G1", "room": "CC LFQ"}, "Martes": {"text": "PRAC. CARTOGRAFÍA Y SIG\nAula: CB-C003", "subject": "PRAC. CARTOGRAFÍA Y SIG", "room": "CB-C003"}, "Miércoles": {"text": "OPERACIONES UNITARIAS\nAula: CB-B104", "subject": "OPERACIONES UNITARIAS", "room": "CB-B104"}, "Jueves": {"text": "MÉTODOS NUMÉRICOS\nAula: CB-C003", "subject": "MÉTODOS NUMÉRICOS", "room": "CB-C003"}, "Viernes": {"text": "PRAC. MÉTODOS NUMÉRICOS\nAula: CB-C003", "subject": "PRAC. MÉTODOS NUMÉRICOS", "room": "CB-C003"}}}, {"time": "16:00–17:00", "slots": {"Lunes": {"text": "PRACTICA TERMODINAMICA G2\nAula: CC LFQ", "subject": "PRACTICA TERMODINAMICA G2", "room": "CC LFQ"}, "Martes": {"text": "PRAC. CARTOGRAFÍA Y SIG\nAula: CB-C003", "subject": "PRAC. CARTOGRAFÍA Y SIG", "room": "CB-C003"}, "Miércoles": {"text": "OPERACIONES UNITARIAS\nAula: CB-B104", "subject": "OPERACIONES UNITARIAS", "room": "CB-B104"}}}, {"time": "17:00–18:00", "slots": {"Lunes": {"text": "PRACTICA TERMODINAMICA G2\nAula: CC LFQ", "subject": "PRACTICA TERMODINAMICA G2", "room": "CC LFQ"}}}, {"time": "18:00–19:00", "slots": {"Martes": {"text": "PRAC. PROCESOS INDUSTRIALES\nAula: FABRICA", "subject": "PRAC. PROCESOS INDUSTRIALES", "room": "FABRICA"}}}, {"time": "19:00–20:00", "slots": {}}, {"time": "20:00–21:00", "slots": {}}]}, {"sheet": "Nivel 5", "title": "Horario de clases · CUARTO NIVEL", "block": "5", "courses": [{"subject": "ECOLOGIA APLICADA", "teacher": "PHD. HENRIETTA HAMPEL", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "teacher": "PHD. ALEX AVILES", "hours_c": 3, "hours_p": 3, "hours_t": 6, "total": 12}, {"subject": "TOXICOLOGIA AMBIENTAL", "teacher": "MGT FERNANDA UGUNA", "hours_c": 2, "hours_p": 4, "hours_t": 6, "total": 12}, {"subject": "SENSORES REMOTOS", "teacher": "PHD DANILO MEJIA", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "SOCIOLOGIA AMBIENTAL", "teacher": "PHD OTILIA CORDERO", "hours_c": 2, "hours_p": 1, "hours_t": 3, "total": 6}, {"subject": "EDUCACION AMBIENTAL", "teacher": "MGT EDGAR VIVAR", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "FUENTES NO CONVENCIONALES DE ENERGÌA", "teacher": "PHD ANDRES MONTERO", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}], "schedule": [{"time": "07:00–08:00", "slots": {"Lunes": {"text": "SOCIOLOGIA AMBIENTAL\nAula: CB-B102", "subject": "SOCIOLOGIA AMBIENTAL", "room": "CB-B102"}, "Martes": {"text": "HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS\nAula: CB-B006", "subject": "HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "room": "CB-B006"}, "Miércoles": {"text": "EDUCACION AMBIENTAL\nAula: CB-B006", "subject": "EDUCACION AMBIENTAL", "room": "CB-B006"}, "Jueves": {"text": "PRACT HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS\nAula: CB-B101", "subject": "PRACT HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "room": "CB-B101"}}}, {"time": "08:00–09:00", "slots": {"Lunes": {"text": "SOCIOLOGIA AMBIENTAL\nAula: CB-B102", "subject": "SOCIOLOGIA AMBIENTAL", "room": "CB-B102"}, "Martes": {"text": "HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS\nAula: CB-B006", "subject": "HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "room": "CB-B006"}, "Miércoles": {"text": "EDUCACION AMBIENTAL\nAula: CB-B006", "subject": "EDUCACION AMBIENTAL", "room": "CB-B006"}, "Jueves": {"text": "PRACT HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS\nAula: CB-B101", "subject": "PRACT HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "room": "CB-B101"}}}, {"time": "09:00–10:00", "slots": {"Lunes": {"text": "FUENTES NO CONVENCIONALES DE ENERGIA\nAula: CB-B006", "subject": "FUENTES NO CONVENCIONALES DE ENERGIA", "room": "CB-B006"}, "Martes": {"text": "HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS\nAula: CB-B006", "subject": "HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "room": "CB-B006"}, "Miércoles": {"text": "ECOLOGIA APLICADA\nAula: CB-B006", "subject": "ECOLOGIA APLICADA", "room": "CB-B006"}, "Jueves": {"text": "PRACT HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS\nAula: CB-B101", "subject": "PRACT HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "room": "CB-B101"}}}, {"time": "10:00–11:00", "slots": {"Lunes": {"text": "FUENTES NO CONVENCIONALES DE ENERGIA\nAula: CB-B006", "subject": "FUENTES NO CONVENCIONALES DE ENERGIA", "room": "CB-B006"}, "Miércoles": {"text": "ECOLOGIA APLICADA\nAula: CB-B006", "subject": "ECOLOGIA APLICADA", "room": "CB-B006"}, "Jueves": {"text": "TOXICOLOGÍA AMBIENTAL\nAula: CB-B101", "subject": "TOXICOLOGÍA AMBIENTAL", "room": "CB-B101"}}}, {"time": "11:00–12:00", "slots": {"Lunes": {"text": "ECOLOGIA APLICADA\nAula: CB-B006", "subject": "ECOLOGIA APLICADA", "room": "CB-B006"}, "Martes": {"text": "SENSORES REMOTOS\nAula: CB-B006", "subject": "SENSORES REMOTOS", "room": "CB-B006"}, "Miércoles": {"text": "PRACT SENSORES REMOTOS\nAula: CB-B006", "subject": "PRACT SENSORES REMOTOS", "room": "CB-B006"}, "Jueves": {"text": "TOXICOLOGÍA AMBIENTAL\nAula: CB-B101", "subject": "TOXICOLOGÍA AMBIENTAL", "room": "CB-B101"}}}, {"time": "12:00–13:00", "slots": {"Lunes": {"text": "ECOLOGIA APLICADA\nAula: CB-B006", "subject": "ECOLOGIA APLICADA", "room": "CB-B006"}, "Martes": {"text": "SENSORES REMOTOS\nAula: CB-B006", "subject": "SENSORES REMOTOS", "room": "CB-B006"}, "Miércoles": {"text": "PRACT SENSORES REMOTOS\nAula: CB-B006", "subject": "PRACT SENSORES REMOTOS", "room": "CB-B006"}}}, {"time": "13:00–14:00", "slots": {}}, {"time": "14:00–15:00", "slots": {"Lunes": {"text": "EDUCACION AMBIENTAL\nAula: CB-B103", "subject": "EDUCACION AMBIENTAL", "room": "CB-B103"}, "Martes": {"text": "SOCIOLOGIA AMBIENTAL\nAula: CB-B006", "subject": "SOCIOLOGIA AMBIENTAL", "room": "CB-B006"}, "Miércoles": {"text": "FUENTES NO CONVENCIONALES DE ENERGIA\nAula: CB-B103", "subject": "FUENTES NO CONVENCIONALES DE ENERGIA", "room": "CB-B103"}}}, {"time": "15:00–16:00", "slots": {"Lunes": {"text": "EDUCACION AMBIENTAL\nAula: CB-B103", "subject": "EDUCACION AMBIENTAL", "room": "CB-B103"}, "Martes": {"text": "PRAC TOXICOLOGÍA AMBIENTAL G2\nAula: LAB AMB", "subject": "PRAC TOXICOLOGÍA AMBIENTAL G2", "room": "LAB AMB"}, "Miércoles": {"text": "FUENTES NO CONVENCIONALES DE ENERGIA\nAula: CB-B103", "subject": "FUENTES NO CONVENCIONALES DE ENERGIA", "room": "CB-B103"}, "Jueves": {"text": "PRAC TOXICOLOGÍA AMBIENTAL G1\nAula: LAB AMB", "subject": "PRAC TOXICOLOGÍA AMBIENTAL G1", "room": "LAB AMB"}}}, {"time": "16:00–17:00", "slots": {"Martes": {"text": "PRAC TOXICOLOGÍA AMBIENTAL G2\nAula: LAB AMB", "subject": "PRAC TOXICOLOGÍA AMBIENTAL G2", "room": "LAB AMB"}, "Jueves": {"text": "PRAC TOXICOLOGÍA AMBIENTAL G1\nAula: LAB AMB", "subject": "PRAC TOXICOLOGÍA AMBIENTAL G1", "room": "LAB AMB"}}}, {"time": "17:00–18:00", "slots": {}}, {"time": "18:00–19:00", "slots": {}}, {"time": "19:00–20:00", "slots": {}}, {"time": "20:00–21:00", "slots": {}}]}, {"sheet": "Nivel 6", "title": "Horario de clases · SEXTO NIVEL", "block": "6", "courses": [{"subject": "EDAFOLOGÍA Y MANEJO DE SUELOS", "teacher": "MGT MARCO RAMIREZ", "hours_c": 3, "hours_p": 2, "hours_t": 5, "total": 10}, {"subject": "CALIDAD Y TRATAMIENTO DE AGUAS", "teacher": "MGT. DANIEL BERMEJO", "hours_c": 3, "hours_p": 6, "hours_t": 9, "total": 18}, {"subject": "GESTION DE RESIDUOS SOLIDOS", "teacher": "PHD JUAN FERNANDO CISNEROS", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "GEOLOGÍA Y RIESGOS GEOLÓGICOS", "teacher": "CONCURSO DE MERITOS", "hours_c": 3, "hours_p": 4, "hours_t": 7, "total": 14}, {"subject": "LEGISLACIÓN AMBIENTAL", "teacher": "MGT ANA ASTUDILLO", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "METEOROLOGÍA Y CLIMATOLOGÍA", "teacher": "PHD ALEX AVILES", "hours_c": 3, "hours_p": 3, "hours_t": 6, "total": 12}], "schedule": [{"time": "07:00–08:00", "slots": {"Lunes": {"text": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G1\nAula: LAB AMB", "subject": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G1", "room": "LAB AMB"}, "Martes": {"text": "CALIDAD Y TRATAMIENTO DEL AGUA\nAula: CB-B102", "subject": "CALIDAD Y TRATAMIENTO DEL AGUA", "room": "CB-B102"}, "Miércoles": {"text": "METEOROLOGÌA Y CLIMATOLOGÌA\nAula: CB-B102", "subject": "METEOROLOGÌA Y CLIMATOLOGÌA", "room": "CB-B102"}, "Jueves": {"text": "GEST RES SÓLIDOS\nAula: CB-B102", "subject": "GEST RES SÓLIDOS", "room": "CB-B102"}, "Viernes": {"text": "METEOROLOGÌA Y CLIMATOLOGÌA\nAula: CB-B102", "subject": "METEOROLOGÌA Y CLIMATOLOGÌA", "room": "CB-B102"}}}, {"time": "08:00–09:00", "slots": {"Lunes": {"text": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G1\nAula: LAB AMB", "subject": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G1", "room": "LAB AMB"}, "Martes": {"text": "CALIDAD Y TRATAMIENTO DEL AGUA\nAula: CB-B102", "subject": "CALIDAD Y TRATAMIENTO DEL AGUA", "room": "CB-B102"}, "Miércoles": {"text": "METEOROLOGÌA Y CLIMATOLOGÌA\nAula: CB-B102", "subject": "METEOROLOGÌA Y CLIMATOLOGÌA", "room": "CB-B102"}, "Jueves": {"text": "GEST RES SÓLIDOS\nAula: CB-B102", "subject": "GEST RES SÓLIDOS", "room": "CB-B102"}, "Viernes": {"text": "METEOROLOGÌA Y CLIMATOLOGÌA\nAula: CB-B102", "subject": "METEOROLOGÌA Y CLIMATOLOGÌA", "room": "CB-B102"}}}, {"time": "09:00–10:00", "slots": {"Lunes": {"text": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G1\nAula: LAB AMB", "subject": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G1", "room": "LAB AMB"}, "Martes": {"text": "CALIDAD Y TRATAMIENTO DEL AGUA\nAula: CB-B102", "subject": "CALIDAD Y TRATAMIENTO DEL AGUA", "room": "CB-B102"}, "Miércoles": {"text": "METEOTOLOGÌA Y CLIMATOLOGÌA\nAula: CB-B102", "subject": "METEOTOLOGÌA Y CLIMATOLOGÌA", "room": "CB-B102"}, "Jueves": {"text": "GEOLOGIA Y RIESGOS GEOLOGICOS\nAula: CB-B102", "subject": "GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102"}, "Viernes": {"text": "METEOROLOGÌA Y CLIMATOLOGÌA\nAula: CB-B102", "subject": "METEOROLOGÌA Y CLIMATOLOGÌA", "room": "CB-B102"}}}, {"time": "10:00–11:00", "slots": {"Lunes": {"text": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G2\nAula: LAB AMB", "subject": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G2", "room": "LAB AMB"}, "Martes": {"text": "EDAFOLOGÍA Y MANEJO DE SUELOS\nAula: CB-B104", "subject": "EDAFOLOGÍA Y MANEJO DE SUELOS", "room": "CB-B104"}, "Miércoles": {"text": "PRACT GEOLOGIA Y RIESGOS GEOLOGICOS\nAula: CB-B102", "subject": "PRACT GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102"}, "Jueves": {"text": "GEOLOGIA Y RIESGOS GEOLOGICOS\nAula: CB-B102", "subject": "GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102"}}}, {"time": "11:00–12:00", "slots": {"Lunes": {"text": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G2\nAula: LAB AMB", "subject": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G2", "room": "LAB AMB"}, "Martes": {"text": "EDAFOLOGÍA Y MANEJO DE SUELOS\nAula: CB-B104", "subject": "EDAFOLOGÍA Y MANEJO DE SUELOS", "room": "CB-B104"}, "Miércoles": {"text": "PRACT GEOLOGIA Y RIESGOS GEOLOGICOS\nAula: CB-B102", "subject": "PRACT GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102"}, "Jueves": {"text": "PRAC EDAFOLOGÍA Y MANEJO DE SUELOS\nAula: CB-B102", "subject": "PRAC EDAFOLOGÍA Y MANEJO DE SUELOS", "room": "CB-B102"}}}, {"time": "12:00–13:00", "slots": {"Lunes": {"text": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G2\nAula: LAB AMB", "subject": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G2", "room": "LAB AMB"}, "Martes": {"text": "EDAFOLOGÍA Y MANEJO DE SUELOS\nAula: CB-B104", "subject": "EDAFOLOGÍA Y MANEJO DE SUELOS", "room": "CB-B104"}, "Jueves": {"text": "PRAC EDAFOLOGÍA Y MANEJO DE SUELOS\nAula: CB-B102", "subject": "PRAC EDAFOLOGÍA Y MANEJO DE SUELOS", "room": "CB-B102"}}}, {"time": "13:00–14:00", "slots": {}}, {"time": "14:00–15:00", "slots": {"Martes": {"text": "LEGISLACION AMBIENTAL\nAula: CB-B104", "subject": "LEGISLACION AMBIENTAL", "room": "CB-B104"}, "Miércoles": {"text": "LEGISLACION AMBIENTAL\nAula: CB-B102", "subject": "LEGISLACION AMBIENTAL", "room": "CB-B102"}, "Jueves": {"text": "GEOLOGIA Y RIESGOS GEOLOGICOS\nAula: CB-B102", "subject": "GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102"}}}, {"time": "15:00–16:00", "slots": {"Lunes": {"text": "PRÁCT. GEST RES SÓLIDOS\nAula: CB-B204/LAB AMB", "subject": "PRÁCT. GEST RES SÓLIDOS", "room": "CB-B204/LAB AMB"}, "Martes": {"text": "LEGISLACION AMBIENTAL\nAula: CB-B104", "subject": "LEGISLACION AMBIENTAL", "room": "CB-B104"}, "Miércoles": {"text": "LEGISLACION AMBIENTAL\nAula: CB-B102", "subject": "LEGISLACION AMBIENTAL", "room": "CB-B102"}, "Jueves": {"text": "GEOLOGIA Y RIESGOS GEOLOGICOS\nAula: CB-B102", "subject": "GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102"}}}, {"time": "16:00–17:00", "slots": {"Lunes": {"text": "PRÁCT. GEST RES SÓLIDOS\nAula: CB-B204/LAB AMB", "subject": "PRÁCT. GEST RES SÓLIDOS", "room": "CB-B204/LAB AMB"}, "Jueves": {"text": "GEOLOGIA Y RIESGOS GEOLOGICOS\nAula: CB-B102", "subject": "GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102"}}}, {"time": "17:00–18:00", "slots": {}}, {"time": "18:00–19:00", "slots": {}}, {"time": "19:00–20:00", "slots": {}}, {"time": "20:00–21:00", "slots": {}}]}, {"sheet": "Nivel 7", "title": "Horario de clases · SÉPTIMO NIVEL", "block": "7", "courses": [{"subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "teacher": "PHD DIANA MOSCOSO", "hours_c": 3, "hours_p": 3, "hours_t": 6, "total": 12}, {"subject": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL", "teacher": "PHD JOSE ASTUDILLO", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL", "teacher": "MGT MARCO RAMIREZ", "hours_c": 3, "hours_p": 2, "hours_t": 5, "total": 10}, {"subject": "ECONOMÍA AMBIENTAL", "teacher": "MGT. ANA ASTUDILLO", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "MANEJO INTEGRAL DEL AGUA", "teacher": "PHD FERNANDO GARCIA", "hours_c": 3, "hours_p": 3, "hours_t": 6, "total": 12}, {"subject": "DESARROLLO DE EMPRENDEDORES", "teacher": "PHD JORGE DELGADO", "hours_c": 1, "hours_p": 1, "hours_t": 2, "total": 4}, {"subject": "SEGURIDAD Y SALUD OCUPACIONAL", "teacher": "MGT. PAULINA ESPINOZA", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}], "schedule": [{"time": "07:00–08:00", "slots": {"Martes": {"text": "MANEJO INTEGRAL DEL AGUA\nAula: CB-B103", "subject": "MANEJO INTEGRAL DEL AGUA", "room": "CB-B103"}, "Miércoles": {"text": "MANEJO INTEGRAL DEL AGUA\nAula: CB-C104", "subject": "MANEJO INTEGRAL DEL AGUA", "room": "CB-C104"}, "Jueves": {"text": "PRACT PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL\nAula: CB-B103", "subject": "PRACT PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL", "room": "CB-B103"}}}, {"time": "08:00–09:00", "slots": {"Lunes": {"text": "SEGURIDAD Y SALUD OCUPACIONAL\nAula: CB-B005", "subject": "SEGURIDAD Y SALUD OCUPACIONAL", "room": "CB-B005"}, "Martes": {"text": "MANEJO INTEGRAL DEL AGUA\nAula: CB-B103", "subject": "MANEJO INTEGRAL DEL AGUA", "room": "CB-B103"}, "Miércoles": {"text": "PRACT MANEJO INTEGRAL DEL AGUA\nAula: CB-C104", "subject": "PRACT MANEJO INTEGRAL DEL AGUA", "room": "CB-C104"}, "Jueves": {"text": "PRACT PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL\nAula: CB-B103", "subject": "PRACT PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL", "room": "CB-B103"}, "Viernes": {"text": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL\nAula: CB-C104", "subject": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL", "room": "CB-C104"}}}, {"time": "09:00–10:00", "slots": {"Lunes": {"text": "SEGURIDAD Y SALUD OCUPACIONAL\nAula: CB-B005", "subject": "SEGURIDAD Y SALUD OCUPACIONAL", "room": "CB-B005"}, "Martes": {"text": "CALIDAD Y TRATAMIENTO DEL AIRE\nAula: CB-C104", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "room": "CB-C104"}, "Miércoles": {"text": "DESARROLLO DE EMPRENDEDORES\nAula: CB-C104", "subject": "DESARROLLO DE EMPRENDEDORES", "room": "CB-C104"}, "Jueves": {"text": "PRACT. MANEJO INTEGRAL DEL AGUA\nAula: LAB AMB/CB-B103", "subject": "PRACT. MANEJO INTEGRAL DEL AGUA", "room": "LAB AMB/CB-B103"}, "Viernes": {"text": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL\nAula: CB-C104", "subject": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL", "room": "CB-C104"}}}, {"time": "10:00–11:00", "slots": {"Lunes": {"text": "PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL\nAula: CB-B102", "subject": "PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL", "room": "CB-B102"}, "Martes": {"text": "CALIDAD Y TRATAMIENTO DEL AIRE\nAula: CB-C104", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "room": "CB-C104"}, "Miércoles": {"text": "DESARROLLO DE EMPRENDEDORES\nAula: CB-C104", "subject": "DESARROLLO DE EMPRENDEDORES", "room": "CB-C104"}, "Jueves": {"text": "PRACT. MANEJO INTEGRAL DEL AGUA\nAula: LAB AMB/CB-B103", "subject": "PRACT. MANEJO INTEGRAL DEL AGUA", "room": "LAB AMB/CB-B103"}, "Viernes": {"text": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL\nAula: CB-C104", "subject": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL", "room": "CB-C104"}}}, {"time": "11:00–12:00", "slots": {"Lunes": {"text": "PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL\nAula: CB-B102", "subject": "PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL", "room": "CB-B102"}, "Martes": {"text": "ECONOMÍA AMBIENTAL\nAula: CB-C104", "subject": "ECONOMÍA AMBIENTAL", "room": "CB-C104"}, "Miércoles": {"text": "PRACT. SEGURIDAD Y SALUD OCUPACIONAL\nAula: CB-B205", "subject": "PRACT. SEGURIDAD Y SALUD OCUPACIONAL", "room": "CB-B205"}, "Jueves": {"text": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL\nAula: CB-B103", "subject": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL", "room": "CB-B103"}, "Viernes": {"text": "ECONOMÍA AMBIENTAL\nAula: CB-B103", "subject": "ECONOMÍA AMBIENTAL", "room": "CB-B103"}}}, {"time": "12:00–13:00", "slots": {"Lunes": {"text": "PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL\nAula: CB-B102", "subject": "PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL", "room": "CB-B102"}, "Martes": {"text": "ECONOMÍA AMBIENTAL\nAula: CB-C104", "subject": "ECONOMÍA AMBIENTAL", "room": "CB-C104"}, "Miércoles": {"text": "PRACT. SEGURIDAD Y SALUD OCUPACIONAL\nAula: CB-B205", "subject": "PRACT. SEGURIDAD Y SALUD OCUPACIONAL", "room": "CB-B205"}, "Viernes": {"text": "ECONOMÍA AMBIENTAL\nAula: CB-B103", "subject": "ECONOMÍA AMBIENTAL", "room": "CB-B103"}}}, {"time": "13:00–14:00", "slots": {}}, {"time": "14:00–15:00", "slots": {"Lunes": {"text": "CALIDAD Y TRATAMIENTO DEL AIRE\nAula: CB-B102", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "room": "CB-B102"}, "Jueves": {"text": "CALIDAD Y TRATAMIENTO DEL AIRE\nAula: CB-B103", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "room": "CB-B103"}}}, {"time": "15:00–16:00", "slots": {"Lunes": {"text": "CALIDAD Y TRATAMIENTO DEL AIRE\nAula: CB-B102", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "room": "CB-B102"}, "Jueves": {"text": "CALIDAD Y TRATAMIENTO DEL AIRE\nAula: CB-B103", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "room": "CB-B103"}}}, {"time": "16:00–17:00", "slots": {}}, {"time": "17:00–18:00", "slots": {}}, {"time": "18:00–19:00", "slots": {}}, {"time": "19:00–20:00", "slots": {}}, {"time": "20:00–21:00", "slots": {}}]}, {"sheet": "Nivel 8", "title": "Horario de clases · SÉPTIMO NIVEL", "block": "8", "courses": [{"subject": "REMEDIACIÓN AMBIENTAL", "teacher": "PHD PABLO JARA", "hours_c": 4, "hours_p": null, "hours_t": 4, "total": 8}, {"subject": "PRACT. REMEDIACIÓN AMBIENTAL", "teacher": "MGT. JUAN GUANUCHI", "hours_c": null, "hours_p": 3, "hours_t": 3, "total": 6}, {"subject": "PROYECTOS AMBIENTALES", "teacher": "MGT. FABIAN SAMANIEGO", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "PRODUCCIÓN MÁS LIMPIA", "teacher": "MGT JESSICA CRIOLLO", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "MODELACIÓN AMBIENTAL", "teacher": "PHD. GALO CARRILLO", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "SISTEMAS INTEGRADOS DE GESTIÓN", "teacher": "MGT PAULINA ESPINOZA", "hours_c": 3, "hours_p": 2, "hours_t": 5, "total": 10}, {"subject": "ESTUDIOS DE IMPACTO AMBIENTAL", "teacher": "MGT. FABIAN SAMANIEGO", "hours_c": 4, "hours_p": 3, "hours_t": 7, "total": 14}], "schedule": [{"time": "07:00–08:00", "slots": {"Lunes": {"text": "PRACT. PRODUCCION MAS LIMPIA\nAula: CB-C104", "subject": "PRACT. PRODUCCION MAS LIMPIA", "room": "CB-C104"}, "Martes": {"text": "REMEDIACIÓN AMBIENTAL\nAula: CB-B206", "subject": "REMEDIACIÓN AMBIENTAL", "room": "CB-B206"}, "Miércoles": {"text": "PRODUCCION MAS LIMPIA\nAula: CB-B104", "subject": "PRODUCCION MAS LIMPIA", "room": "CB-B104"}}}, {"time": "08:00–09:00", "slots": {"Lunes": {"text": "PRACT. PRODUCCION MAS LIMPIA\nAula: CB-C104", "subject": "PRACT. PRODUCCION MAS LIMPIA", "room": "CB-C104"}, "Martes": {"text": "REMEDIACIÓN AMBIENTAL\nAula: CB-B206", "subject": "REMEDIACIÓN AMBIENTAL", "room": "CB-B206"}, "Miércoles": {"text": "PRODUCCION MAS LIMPIA\nAula: CB-B104", "subject": "PRODUCCION MAS LIMPIA", "room": "CB-B104"}, "Jueves": {"text": "SISTEMAS INTEGRADOS DE GESTION\nAula: CB-C104", "subject": "SISTEMAS INTEGRADOS DE GESTION", "room": "CB-C104"}, "Viernes": {"text": "VISITAS TECNICAS", "subject": "VISITAS TECNICAS", "room": ""}}}, {"time": "09:00–10:00", "slots": {"Lunes": {"text": "PRACT. MODELACIÓN AMBIENTAL\nAula: CB-C104", "subject": "PRACT. MODELACIÓN AMBIENTAL", "room": "CB-C104"}, "Martes": {"text": "PROYECTOS AMBIENTALES\nAula: CB-B206", "subject": "PROYECTOS AMBIENTALES", "room": "CB-B206"}, "Miércoles": {"text": "PRACT. SISTEMAS INTEGRADOS DE GESTION\nAula: CB-B105", "subject": "PRACT. SISTEMAS INTEGRADOS DE GESTION", "room": "CB-B105"}, "Jueves": {"text": "SISTEMAS INTEGRADOS DE GESTION\nAula: CB-C104", "subject": "SISTEMAS INTEGRADOS DE GESTION", "room": "CB-C104"}, "Viernes": {"text": "VISITAS TECNICAS", "subject": "VISITAS TECNICAS", "room": ""}}}, {"time": "10:00–11:00", "slots": {"Lunes": {"text": "PRACT. MODELACIÓN AMBIENTAL\nAula: CB-C104", "subject": "PRACT. MODELACIÓN AMBIENTAL", "room": "CB-C104"}, "Martes": {"text": "PROYECTOS AMBIENTALES\nAula: CB-B206", "subject": "PROYECTOS AMBIENTALES", "room": "CB-B206"}, "Miércoles": {"text": "PRACT. SISTEMAS INTEGRADOS DE GESTION\nAula: CB-B105", "subject": "PRACT. SISTEMAS INTEGRADOS DE GESTION", "room": "CB-B105"}, "Jueves": {"text": "SISTEMAS INTEGRADOS DE GESTION\nAula: CB-C104", "subject": "SISTEMAS INTEGRADOS DE GESTION", "room": "CB-C104"}, "Viernes": {"text": "VISITAS TECNICAS", "subject": "VISITAS TECNICAS", "room": ""}}}, {"time": "11:00–12:00", "slots": {"Martes": {"text": "MODELACIÓN AMBIENTAL\nAula: CB-C004", "subject": "MODELACIÓN AMBIENTAL", "room": "CB-C004"}, "Miércoles": {"text": "PROYECTOS AMBIENTALES\nAula: CB-C104", "subject": "PROYECTOS AMBIENTALES", "room": "CB-C104"}, "Jueves": {"text": "ESTUDIOS DE IMPACTO AMBIENTAL\nAula: CB-B006", "subject": "ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B006"}, "Viernes": {"text": "VISITAS TECNICAS", "subject": "VISITAS TECNICAS", "room": ""}}}, {"time": "12:00–13:00", "slots": {"Martes": {"text": "MODELACIÓN AMBIENTAL\nAula: CB-C004", "subject": "MODELACIÓN AMBIENTAL", "room": "CB-C004"}, "Miércoles": {"text": "PROYECTOS AMBIENTALES\nAula: CB-C104", "subject": "PROYECTOS AMBIENTALES", "room": "CB-C104"}, "Jueves": {"text": "ESTUDIOS DE IMPACTO AMBIENTAL\nAula: CB-B006", "subject": "ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B006"}, "Viernes": {"text": "VISITAS TECNICAS", "subject": "VISITAS TECNICAS", "room": ""}}}, {"time": "13:00–14:00", "slots": {"Viernes": {"text": "VISITAS TECNICAS", "subject": "VISITAS TECNICAS", "room": ""}}}, {"time": "14:00–15:00", "slots": {"Lunes": {"text": "REMEDIACIÓN AMBIENTAL\nAula: CB-B006", "subject": "REMEDIACIÓN AMBIENTAL", "room": "CB-B006"}, "Jueves": {"text": "PRACT. REMEDIACIÓN AMBIENTAL\nAula: LAB. AMB / CB-B203", "subject": "PRACT. REMEDIACIÓN AMBIENTAL", "room": "LAB. AMB / CB-B203"}, "Viernes": {"text": "VISITAS TECNICAS", "subject": "VISITAS TECNICAS", "room": ""}}}, {"time": "15:00–16:00", "slots": {"Lunes": {"text": "REMEDIACIÓN AMBIENTAL\nAula: CB-B006", "subject": "REMEDIACIÓN AMBIENTAL", "room": "CB-B006"}, "Martes": {"text": "ESTUDIOS DE IMPACTO AMBIENTAL\nAula: CB-B201", "subject": "ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B201"}, "Miércoles": {"text": "PRACT. ESTUDIOS DE IMPACTO AMBIENTAL\nAula: CB-B101", "subject": "PRACT. ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B101"}, "Jueves": {"text": "PRACT. REMEDIACIÓN AMBIENTAL\nAula: LAB. AMB / CB-B203", "subject": "PRACT. REMEDIACIÓN AMBIENTAL", "room": "LAB. AMB / CB-B203"}, "Viernes": {"text": "VISITAS TECNICAS", "subject": "VISITAS TECNICAS", "room": ""}}}, {"time": "16:00–17:00", "slots": {"Martes": {"text": "ESTUDIOS DE IMPACTO AMBIENTAL\nAula: CB-B201", "subject": "ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B201"}, "Miércoles": {"text": "PRACT. ESTUDIOS DE IMPACTO AMBIENTAL\nAula: CB-B101", "subject": "PRACT. ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B101"}, "Jueves": {"text": "PRACT. REMEDIACIÓN AMBIENTAL\nAula: LAB. AMB / CB-B203", "subject": "PRACT. REMEDIACIÓN AMBIENTAL", "room": "LAB. AMB / CB-B203"}, "Viernes": {"text": "VISITAS TECNICAS", "subject": "VISITAS TECNICAS", "room": ""}}}, {"time": "17:00–18:00", "slots": {"Miércoles": {"text": "PRACT. ESTUDIOS DE IMPACTO AMBIENTAL\nAula: CB-B101", "subject": "PRACT. ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B101"}, "Viernes": {"text": "VISITAS TECNICAS", "subject": "VISITAS TECNICAS", "room": ""}}}, {"time": "18:00–19:00", "slots": {}}, {"time": "19:00–20:00", "slots": {}}, {"time": "20:00–21:00", "slots": {}}]}, {"sheet": "Nivel 9", "title": "Horario de clases · NOVENO", "block": "9", "courses": [{"subject": "DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES", "teacher": "MGT. CARLOS SANCHEZ", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "MANEJO Y RECUPERACIÓN DE MATERIALES", "teacher": "PHD JUAN FERNANDO CISNEROS", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES", "teacher": "CONCURSO", "hours_c": 3, "hours_p": 2, "hours_t": 5, "total": 10}, {"subject": "SANEAMIENTO AMBIENTAL", "teacher": "PHD JUAN FERNANDO CISNEROS", "hours_c": 3, "hours_p": 2, "hours_t": 5, "total": 10}, {"subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "teacher": "PHD. GALO CARRILLO", "hours_c": 4, "hours_p": null, "hours_t": 4, "total": 8}, {"subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "teacher": "MGT. DANIEL BERMEJO", "hours_c": null, "hours_p": 4, "hours_t": null, "total": 4}, {"subject": "TITULACIÓN FASE I", "teacher": "MGT. JUAN GUANUCHI", "hours_c": 1, "hours_p": 1, "hours_t": 2, "total": 4}, {"subject": "PRÁCTICAS DE SERVICIO COMUNITARIO", "teacher": "MGT. JESSICA CRIOLLO", "hours_c": null, "hours_p": 2, "hours_t": 2, "total": 4}], "schedule": [{"time": "07:00–08:00", "slots": {"Lunes": {"text": "PRAC ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES G1\nAula: CB-B006", "subject": "PRAC ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES G1", "room": "CB-B006"}, "Martes": {"text": "ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES\nAula: CB-B104", "subject": "ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES", "room": "CB-B104"}, "Miércoles": {"text": "MANEJO Y RECUPERACIÓN DE MATERIALES\nAula: CB-B101", "subject": "MANEJO Y RECUPERACIÓN DE MATERIALES", "room": "CB-B101"}, "Jueves": {"text": "PRACT DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES\nAula: CB-C0-07", "subject": "PRACT DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES", "room": "CB-C0-07"}, "Viernes": {"text": "TITULACIÓN FASE I\nAula: CB-B104", "subject": "TITULACIÓN FASE I", "room": "CB-B104"}}}, {"time": "08:00–09:00", "slots": {"Lunes": {"text": "PRAC ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES G1\nAula: CB-B006", "subject": "PRAC ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES G1", "room": "CB-B006"}, "Martes": {"text": "ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES\nAula: CB-B104", "subject": "ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES", "room": "CB-B104"}, "Miércoles": {"text": "MANEJO Y RECUPERACIÓN DE MATERIALES\nAula: CB-B101", "subject": "MANEJO Y RECUPERACIÓN DE MATERIALES", "room": "CB-B101"}, "Jueves": {"text": "PRACT DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES\nAula: CB-C0-07", "subject": "PRACT DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES", "room": "CB-C0-07"}}}, {"time": "09:00–10:00", "slots": {"Lunes": {"text": "MANEJO Y RECUPERACIÓN DE MATERIALES\nAula: CB-B204", "subject": "MANEJO Y RECUPERACIÓN DE MATERIALES", "room": "CB-B204"}, "Martes": {"text": "ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES\nAula: CB-B104", "subject": "ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES", "room": "CB-B104"}, "Jueves": {"text": "PRAC SANEAMIENTO AMBIENTAL\nAula: CB-B006", "subject": "PRAC SANEAMIENTO AMBIENTAL", "room": "CB-B006"}, "Viernes": {"text": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES\nAula: CB-B006", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-B006"}}}, {"time": "10:00–11:00", "slots": {"Lunes": {"text": "MANEJO Y RECUPERACIÓN DE MATERIALES\nAula: CB-B204", "subject": "MANEJO Y RECUPERACIÓN DE MATERIALES", "room": "CB-B204"}, "Martes": {"text": "SANEAMIENTO AMBIENTAL\nAula: CB-B102", "subject": "SANEAMIENTO AMBIENTAL", "room": "CB-B102"}, "Jueves": {"text": "PRAC SANEAMIENTO AMBIENTAL\nAula: CB-B006", "subject": "PRAC SANEAMIENTO AMBIENTAL", "room": "CB-B006"}, "Viernes": {"text": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES\nAula: CB-B006", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-B006"}}}, {"time": "11:00–12:00", "slots": {"Lunes": {"text": "PRÁCTICAS DE SERVICIO COMUNITARIO\nAula: CB-B101", "subject": "PRÁCTICAS DE SERVICIO COMUNITARIO", "room": "CB-B101"}, "Martes": {"text": "SANEAMIENTO AMBIENTAL\nAula: CB-B102", "subject": "SANEAMIENTO AMBIENTAL", "room": "CB-B102"}, "Miércoles": {"text": "DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES\nAula: CB-C0-08", "subject": "DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES", "room": "CB-C0-08"}, "Jueves": {"text": "PRAC SANEAMIENTO AMBIENTAL\nAula: CB-B006", "subject": "PRAC SANEAMIENTO AMBIENTAL", "room": "CB-B006"}, "Viernes": {"text": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES\nAula: CB-B006", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-B006"}}}, {"time": "12:00–13:00", "slots": {"Lunes": {"text": "PRÁCTICAS DE SERVICIO COMUNITARIO\nAula: CB-B101", "subject": "PRÁCTICAS DE SERVICIO COMUNITARIO", "room": "CB-B101"}, "Miércoles": {"text": "DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES\nAula: CB-C0-08", "subject": "DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES", "room": "CB-C0-08"}, "Jueves": {"text": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES\nAula: CB-B203", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-B203"}, "Viernes": {"text": "TITULACIÓN FASE I\nAula: CB-B006", "subject": "TITULACIÓN FASE I", "room": "CB-B006"}}}, {"time": "13:00–14:00", "slots": {}}, {"time": "14:00–15:00", "slots": {}}, {"time": "15:00–16:00", "slots": {"Lunes": {"text": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES\nAula: CB-C104", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-C104"}, "Martes": {"text": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES\nAula: CB-B202", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-B202"}}}, {"time": "16:00–17:00", "slots": {"Lunes": {"text": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES\nAula: CB-C104", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-C104"}}}, {"time": "17:00–18:00", "slots": {"Lunes": {"text": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES\nAula: CB-C104", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-C104"}}}, {"time": "18:00–19:00", "slots": {}}, {"time": "19:00–20:00", "slots": {}}, {"time": "20:00–21:00", "slots": {}}]}, {"sheet": "Nivel 10", "title": "Horario de clases · DECIMO", "block": "10", "courses": [{"subject": "EMISIONES ATMOSFÉRICAS", "teacher": "PHD. DIANA MOSCOSO", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "EFICIENCIA ENERGÉTICA", "teacher": "PHD. ANDRES MONTERO", "hours_c": 2, "hours_p": 2, "hours_t": 4, "total": 8}, {"subject": "TITULACIÓN FASE II", "teacher": "MGT. JUAN GUANUCHI", "hours_c": null, "hours_p": 1, "hours_t": 1, "total": 2}, {"subject": "PRÁCTICAS LABORALES", "teacher": "MGT. JESSICA CRIOLLO", "hours_c": null, "hours_p": 1, "hours_t": 1, "total": 2}], "schedule": [{"time": "07:00–08:00", "slots": {}}, {"time": "08:00–09:00", "slots": {"Viernes": {"text": "TITULACIÓN FASE II\nAula: CB-B104", "subject": "TITULACIÓN FASE II", "room": "CB-B104"}}}, {"time": "09:00–10:00", "slots": {"Jueves": {"text": "EMISIONES ATMOSFÉRICAS\nAula: CB-B206", "subject": "EMISIONES ATMOSFÉRICAS", "room": "CB-B206"}, "Viernes": {"text": "EFICIENCIA ENERGÉTICA\nAula: CB-B202", "subject": "EFICIENCIA ENERGÉTICA", "room": "CB-B202"}}}, {"time": "10:00–11:00", "slots": {"Jueves": {"text": "EMISIONES ATMOSFÉRICAS\nAula: CB-B206", "subject": "EMISIONES ATMOSFÉRICAS", "room": "CB-B206"}, "Viernes": {"text": "EFICIENCIA ENERGÉTICA\nAula: CB-B202", "subject": "EFICIENCIA ENERGÉTICA", "room": "CB-B202"}}}, {"time": "11:00–12:00", "slots": {"Jueves": {"text": "EFICIENCIA ENERGÉTICA\nAula: CB-C104", "subject": "EFICIENCIA ENERGÉTICA", "room": "CB-C104"}, "Viernes": {"text": "EMISIONES ATMOSFÉRICAS\nAula: CB-B104", "subject": "EMISIONES ATMOSFÉRICAS", "room": "CB-B104"}}}, {"time": "12:00–13:00", "slots": {"Miércoles": {"text": "PRÁCTICAS LABORALES\nAula: CB-B102", "subject": "PRÁCTICAS LABORALES", "room": "CB-B102"}, "Jueves": {"text": "EFICIENCIA ENERGÉTICA\nAula: CB-C104", "subject": "EFICIENCIA ENERGÉTICA", "room": "CB-C104"}, "Viernes": {"text": "EMISIONES ATMOSFÉRICAS\nAula: CB-B104", "subject": "EMISIONES ATMOSFÉRICAS", "room": "CB-B104"}}}, {"time": "13:00–14:00", "slots": {}}, {"time": "14:00–15:00", "slots": {}}, {"time": "15:00–16:00", "slots": {}}, {"time": "16:00–17:00", "slots": {}}, {"time": "17:00–18:00", "slots": {}}, {"time": "18:00–19:00", "slots": {}}, {"time": "19:00–20:00", "slots": {}}, {"time": "20:00–21:00", "slots": {}}]}], "teachers": [{"teacher": "CONCURSO", "entries": [{"sheet": "Nivel 9", "block": "9", "subject": "ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES", "total": 10, "title": "Horario de clases · NOVENO"}], "schedule": [{"day": "Lunes", "time": "07:00–08:00", "subject": "PRAC ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES G1", "room": "CB-B006", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Lunes", "time": "08:00–09:00", "subject": "PRAC ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES G1", "room": "CB-B006", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Martes", "time": "07:00–08:00", "subject": "ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES", "room": "CB-B104", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Martes", "time": "08:00–09:00", "subject": "ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES", "room": "CB-B104", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Martes", "time": "09:00–10:00", "subject": "ANÁLISIS Y PROCESAMIENTO DE DATOS AMBIENTALES", "room": "CB-B104", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}]}, {"teacher": "CONCURSO DE MERITOS", "entries": [{"sheet": "Nivel 6", "block": "6", "subject": "GEOLOGÍA Y RIESGOS GEOLÓGICOS", "total": 14, "title": "Horario de clases · SEXTO NIVEL"}], "schedule": [{"day": "Miércoles", "time": "10:00–11:00", "subject": "PRACT GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Miércoles", "time": "11:00–12:00", "subject": "PRACT GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Jueves", "time": "09:00–10:00", "subject": "GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Jueves", "time": "10:00–11:00", "subject": "GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Jueves", "time": "14:00–15:00", "subject": "GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Jueves", "time": "15:00–16:00", "subject": "GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Jueves", "time": "16:00–17:00", "subject": "GEOLOGIA Y RIESGOS GEOLOGICOS", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}]}, {"teacher": "MGT ALEXANDRA CRIOLLO", "entries": [{"sheet": "Nivel 3", "block": "3", "subject": "TERMODINAMICA I", "total": 8, "title": "Horario de clases · SEGUNDO NIVEL"}], "schedule": [{"day": "Martes", "time": "09:00–10:00", "subject": "TERMODINAMICA I", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Martes", "time": "10:00–11:00", "subject": "TERMODINAMICA I", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Jueves", "time": "11:00–12:00", "subject": "PRAC. TERMODINAMICA I G1", "room": "CT LFQ", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Jueves", "time": "12:00–13:00", "subject": "PRAC. TERMODINAMICA I G1", "room": "CT LFQ", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Jueves", "time": "14:00–15:00", "subject": "PRAC. TERMODINAMICA I G2", "room": "CT LFQ", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Jueves", "time": "15:00–16:00", "subject": "PRAC. TERMODINAMICA I G2", "room": "CT LFQ", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}]}, {"teacher": "MGT ANA ASTUDILLO", "entries": [{"sheet": "Nivel 6", "block": "6", "subject": "LEGISLACIÓN AMBIENTAL", "total": 8, "title": "Horario de clases · SEXTO NIVEL"}], "schedule": [{"day": "Martes", "time": "14:00–15:00", "subject": "LEGISLACION AMBIENTAL", "room": "CB-B104", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Martes", "time": "15:00–16:00", "subject": "LEGISLACION AMBIENTAL", "room": "CB-B104", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Miércoles", "time": "14:00–15:00", "subject": "LEGISLACION AMBIENTAL", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Miércoles", "time": "15:00–16:00", "subject": "LEGISLACION AMBIENTAL", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}]}, {"teacher": "MGT EDGAR VIVAR", "entries": [{"sheet": "Nivel 5", "block": "5", "subject": "EDUCACION AMBIENTAL", "total": 8, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Lunes", "time": "14:00–15:00", "subject": "EDUCACION AMBIENTAL", "room": "CB-B103", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Lunes", "time": "15:00–16:00", "subject": "EDUCACION AMBIENTAL", "room": "CB-B103", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "07:00–08:00", "subject": "EDUCACION AMBIENTAL", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "08:00–09:00", "subject": "EDUCACION AMBIENTAL", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}]}, {"teacher": "MGT FERNANDA UGUNA", "entries": [{"sheet": "Nivel 5", "block": "5", "subject": "TOXICOLOGIA AMBIENTAL", "total": 12, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Martes", "time": "15:00–16:00", "subject": "PRAC TOXICOLOGÍA AMBIENTAL G2", "room": "LAB AMB", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Martes", "time": "16:00–17:00", "subject": "PRAC TOXICOLOGÍA AMBIENTAL G2", "room": "LAB AMB", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "10:00–11:00", "subject": "TOXICOLOGÍA AMBIENTAL", "room": "CB-B101", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "11:00–12:00", "subject": "TOXICOLOGÍA AMBIENTAL", "room": "CB-B101", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "15:00–16:00", "subject": "PRAC TOXICOLOGÍA AMBIENTAL G1", "room": "LAB AMB", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "16:00–17:00", "subject": "PRAC TOXICOLOGÍA AMBIENTAL G1", "room": "LAB AMB", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}]}, {"teacher": "MGT JESSICA CRIOLLO", "entries": [{"sheet": "Nivel 8", "block": "8", "subject": "PRODUCCIÓN MÁS LIMPIA", "total": 8, "title": "Horario de clases · SÉPTIMO NIVEL"}], "schedule": [{"day": "Lunes", "time": "07:00–08:00", "subject": "PRACT. PRODUCCION MAS LIMPIA", "room": "CB-C104", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Lunes", "time": "08:00–09:00", "subject": "PRACT. PRODUCCION MAS LIMPIA", "room": "CB-C104", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "07:00–08:00", "subject": "PRODUCCION MAS LIMPIA", "room": "CB-B104", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "08:00–09:00", "subject": "PRODUCCION MAS LIMPIA", "room": "CB-B104", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}]}, {"teacher": "MGT MARCO RAMIREZ", "entries": [{"sheet": "Nivel 6", "block": "6", "subject": "EDAFOLOGÍA Y MANEJO DE SUELOS", "total": 10, "title": "Horario de clases · SEXTO NIVEL"}, {"sheet": "Nivel 7", "block": "7", "subject": "PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL", "total": 10, "title": "Horario de clases · SÉPTIMO NIVEL"}], "schedule": [{"day": "Lunes", "time": "10:00–11:00", "subject": "PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL", "room": "CB-B102", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Lunes", "time": "11:00–12:00", "subject": "PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL", "room": "CB-B102", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Lunes", "time": "12:00–13:00", "subject": "PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL", "room": "CB-B102", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Martes", "time": "10:00–11:00", "subject": "EDAFOLOGÍA Y MANEJO DE SUELOS", "room": "CB-B104", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Martes", "time": "11:00–12:00", "subject": "EDAFOLOGÍA Y MANEJO DE SUELOS", "room": "CB-B104", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Martes", "time": "12:00–13:00", "subject": "EDAFOLOGÍA Y MANEJO DE SUELOS", "room": "CB-B104", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Jueves", "time": "07:00–08:00", "subject": "PRACT PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL", "room": "CB-B103", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "08:00–09:00", "subject": "PRACT PLANIFICACIÓN Y ORDENAMIENTO TERRITORIAL", "room": "CB-B103", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "11:00–12:00", "subject": "PRAC EDAFOLOGÍA Y MANEJO DE SUELOS", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Jueves", "time": "12:00–13:00", "subject": "PRAC EDAFOLOGÍA Y MANEJO DE SUELOS", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}]}, {"teacher": "MGT MARIA DOLORE TONON", "entries": [{"sheet": "Nivel 4", "block": "4", "subject": "PROCESOS INDUSTRIALES", "total": 4, "title": "Horario de clases · CUARTO NIVEL"}, {"sheet": "Nivel 4", "block": "4", "subject": "PROCESOS INDUSTRIALES", "total": 6, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Martes", "time": "07:00–08:00", "subject": "PRAC. PROCESOS INDUSTRIALES", "room": "FABRICA", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Martes", "time": "08:00–09:00", "subject": "PRAC. PROCESOS INDUSTRIALES", "room": "FABRICA", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Martes", "time": "18:00–19:00", "subject": "PRAC. PROCESOS INDUSTRIALES", "room": "FABRICA", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "07:00–08:00", "subject": "PROCESOS INDUSTRIALES", "room": "CB-B006", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "08:00–09:00", "subject": "PROCESOS INDUSTRIALES", "room": "CB-B006", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}]}, {"teacher": "MGT PAULINA ESPINOZA", "entries": [{"sheet": "Nivel 8", "block": "8", "subject": "SISTEMAS INTEGRADOS DE GESTIÓN", "total": 10, "title": "Horario de clases · SÉPTIMO NIVEL"}], "schedule": [{"day": "Miércoles", "time": "09:00–10:00", "subject": "PRACT. SISTEMAS INTEGRADOS DE GESTION", "room": "CB-B105", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "10:00–11:00", "subject": "PRACT. SISTEMAS INTEGRADOS DE GESTION", "room": "CB-B105", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "08:00–09:00", "subject": "SISTEMAS INTEGRADOS DE GESTION", "room": "CB-C104", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "09:00–10:00", "subject": "SISTEMAS INTEGRADOS DE GESTION", "room": "CB-C104", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "10:00–11:00", "subject": "SISTEMAS INTEGRADOS DE GESTION", "room": "CB-C104", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}]}, {"teacher": "MGT. ALEXANDRA CRIOLLO", "entries": [{"sheet": "Nivel 4", "block": "4", "subject": "TERMODINÁMICA II", "total": 8, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Viernes", "time": "07:00–08:00", "subject": "TERMODINAMICA II", "room": "CB-B101", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Viernes", "time": "08:00–09:00", "subject": "TERMODINAMICA II", "room": "CB-B101", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}]}, {"teacher": "MGT. ANA ASTUDILLO", "entries": [{"sheet": "Nivel 7", "block": "7", "subject": "ECONOMÍA AMBIENTAL", "total": 8, "title": "Horario de clases · SÉPTIMO NIVEL"}], "schedule": [{"day": "Martes", "time": "11:00–12:00", "subject": "ECONOMÍA AMBIENTAL", "room": "CB-C104", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Martes", "time": "12:00–13:00", "subject": "ECONOMÍA AMBIENTAL", "room": "CB-C104", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Viernes", "time": "11:00–12:00", "subject": "ECONOMÍA AMBIENTAL", "room": "CB-B103", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Viernes", "time": "12:00–13:00", "subject": "ECONOMÍA AMBIENTAL", "room": "CB-B103", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}]}, {"teacher": "MGT. BOLIVAR BERNAL", "entries": [{"sheet": "Nivel 1A", "block": "1A", "subject": "PRACT CÁLCULO DIFERENCIAL G2", "total": 3, "title": "Horario de clases · PRIMER NIVEL A"}], "schedule": [{"day": "Martes", "time": "10:00–11:00", "subject": "PRÁCT. CÁLCULO DIFERENCIAL G2", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Miércoles", "time": "16:00–17:00", "subject": "QUIM. GEN PRACT G2", "room": "CC-C105", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Miércoles", "time": "17:00–18:00", "subject": "QUIM. GEN PRACT G2", "room": "CC-C105", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Viernes", "time": "11:00–12:00", "subject": "PRÁCT. CÁLCULO DIFERENCIAL G2", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Viernes", "time": "12:00–13:00", "subject": "PRÁCT. CÁLCULO DIFERENCIAL G2", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}]}, {"teacher": "MGT. CARLOS SANCHEZ", "entries": [{"sheet": "Nivel 3", "block": "3", "subject": "ECUACIONES DIFERENCIALES", "total": 12, "title": "Horario de clases · SEGUNDO NIVEL"}, {"sheet": "Nivel 9", "block": "9", "subject": "DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES", "total": 8, "title": "Horario de clases · NOVENO"}], "schedule": [{"day": "Lunes", "time": "09:00–10:00", "subject": "ECUACIONES DIFERENCIALES", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Lunes", "time": "10:00–11:00", "subject": "ECUACIONES DIFERENCIALES", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Martes", "time": "11:00–12:00", "subject": "PRACT ECUACIONES DIFERENCIALES", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Martes", "time": "12:00–13:00", "subject": "ECUACIONES DIFERENCIALES", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "11:00–12:00", "subject": "DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES", "room": "CB-C0-08", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Miércoles", "time": "12:00–13:00", "subject": "DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES", "room": "CB-C0-08", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Jueves", "time": "07:00–08:00", "subject": "PRACT DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES", "room": "CB-C0-07", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Jueves", "time": "08:00–09:00", "subject": "PRACT DISEÑO Y SIMULACION DE PROCESOS AMBIENTALES", "room": "CB-C0-07", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Jueves", "time": "09:00–10:00", "subject": "PRACT ECUACIONES DIFERENCIALES", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Jueves", "time": "10:00–11:00", "subject": "PRACT ECUACIONES DIFERENCIALES", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}]}, {"teacher": "MGT. DAMIAN FLORES", "entries": [{"sheet": "Nivel 4", "block": "4", "subject": "PRACT. OPERACIONES UNITARIAS G1 - G2 LAB OP UNITARIAS", "total": 8, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Lunes", "time": "14:00–15:00", "subject": "PRACTICA TERMODINAMICA G1", "room": "CC LFQ", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Lunes", "time": "15:00–16:00", "subject": "PRACTICA TERMODINAMICA G1", "room": "CC LFQ", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Lunes", "time": "16:00–17:00", "subject": "PRACTICA TERMODINAMICA G2", "room": "CC LFQ", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Lunes", "time": "17:00–18:00", "subject": "PRACTICA TERMODINAMICA G2", "room": "CC LFQ", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "11:00–12:00", "subject": "PRACTICA OPERACIONES UNITARIAS G1", "room": "LAB OP UNIT", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "12:00–13:00", "subject": "PRACTICA OPERACIONES UNITARIAS G1", "room": "LAB OP UNIT", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}]}, {"teacher": "MGT. DANIEL BERMEJO", "entries": [{"sheet": "Nivel 6", "block": "6", "subject": "CALIDAD Y TRATAMIENTO DE AGUAS", "total": 18, "title": "Horario de clases · SEXTO NIVEL"}, {"sheet": "Nivel 9", "block": "9", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "total": 4, "title": "Horario de clases · NOVENO"}], "schedule": [{"day": "Lunes", "time": "07:00–08:00", "subject": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G1", "room": "LAB AMB", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Lunes", "time": "08:00–09:00", "subject": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G1", "room": "LAB AMB", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Lunes", "time": "09:00–10:00", "subject": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G1", "room": "LAB AMB", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Lunes", "time": "10:00–11:00", "subject": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G2", "room": "LAB AMB", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Lunes", "time": "11:00–12:00", "subject": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G2", "room": "LAB AMB", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Lunes", "time": "12:00–13:00", "subject": "PRACT. CALIDAD Y TRATAMENTO DEL AGUA G2", "room": "LAB AMB", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Lunes", "time": "15:00–16:00", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-C104", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Lunes", "time": "16:00–17:00", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-C104", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Lunes", "time": "17:00–18:00", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-C104", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Martes", "time": "07:00–08:00", "subject": "CALIDAD Y TRATAMIENTO DEL AGUA", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Martes", "time": "08:00–09:00", "subject": "CALIDAD Y TRATAMIENTO DEL AGUA", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Martes", "time": "09:00–10:00", "subject": "CALIDAD Y TRATAMIENTO DEL AGUA", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Martes", "time": "15:00–16:00", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-B202", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Jueves", "time": "12:00–13:00", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-B203", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Viernes", "time": "09:00–10:00", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-B006", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Viernes", "time": "10:00–11:00", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-B006", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Viernes", "time": "11:00–12:00", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "room": "CB-B006", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}]}, {"teacher": "MGT. DANIEL ZAMBRANO", "entries": [{"sheet": "Nivel 1A", "block": "1A", "subject": "DIBUJO ASISTIDO POR COMPUTADOR", "total": 4, "title": "Horario de clases · PRIMER NIVEL A"}, {"sheet": "Nivel 1B", "block": "1B", "subject": "ALGEBRA LINEAL", "total": 6, "title": "Horario de clases · PRIMER NIVEL B"}], "schedule": [{"day": "Lunes", "time": "14:00–15:00", "subject": "DIBUJO ASISTIDO POR COMPUTADOR", "room": "CB-C004", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Lunes", "time": "15:00–16:00", "subject": "DIBUJO ASISTIDO POR COMPUTADOR", "room": "CB-C004", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Miércoles", "time": "14:00–15:00", "subject": "PRAC ALGEBRA LINEAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Miércoles", "time": "15:00–16:00", "subject": "PRAC ALGEBRA LINEAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Miércoles", "time": "16:00–17:00", "subject": "PRAC ALGEBRA LINEAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Viernes", "time": "07:00–08:00", "subject": "DIBUJO ASISTIDO POR COMPUTADOR", "room": "CENTRO DE COMPUTO", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Viernes", "time": "08:00–09:00", "subject": "DIBUJO ASISTIDO POR COMPUTADOR", "room": "CENTRO DE COMPUTO", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Viernes", "time": "14:00–15:00", "subject": "ALGEBRA LINEAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Viernes", "time": "15:00–16:00", "subject": "ALGEBRA LINEAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Viernes", "time": "16:00–17:00", "subject": "ALGEBRA LINEAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}]}, {"teacher": "MGT. DANIELA ALBUJA", "entries": [{"sheet": "Nivel 2", "block": "2", "subject": "QUÍMICA ORGÁNICA AMBIENTAL", "total": 12, "title": "Horario de clases · SEGUNDO NIVEL"}], "schedule": []}, {"teacher": "MGT. EDGAR VIVAR", "entries": [{"sheet": "Nivel 1A", "block": "1A", "subject": "FISICA I", "total": 6, "title": "Horario de clases · PRIMER NIVEL A"}, {"sheet": "Nivel 2", "block": "2", "subject": "FÍSICA II", "total": 12, "title": "Horario de clases · SEGUNDO NIVEL"}], "schedule": [{"day": "Lunes", "time": "07:00–08:00", "subject": "FISICA I", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Lunes", "time": "08:00–09:00", "subject": "FISICA I", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Martes", "time": "07:00–08:00", "subject": "FISICA II", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Martes", "time": "08:00–09:00", "subject": "FÍSICA II", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Martes", "time": "09:00–10:00", "subject": "FÍSICA II", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Martes", "time": "12:00–13:00", "subject": "FISICA I", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Martes", "time": "14:00–15:00", "subject": "PRACT. FISICA I", "room": "CB CB-C104", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Martes", "time": "15:00–16:00", "subject": "PRACT. FISICA I", "room": "CB CB-C104", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Martes", "time": "16:00–17:00", "subject": "PRACT. FISICA I", "room": "CB CB-C104", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Miércoles", "time": "14:00–15:00", "subject": "PRÁCT. FÍSICA II", "room": "CB-C001", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "15:00–16:00", "subject": "PRÁCT. FÍSICA II", "room": "CB-C001", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "16:00–17:00", "subject": "PRÁCT. FÍSICA II", "room": "CB-C001", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}]}, {"teacher": "MGT. FABIAN SAMANIEGO", "entries": [{"sheet": "Nivel 8", "block": "8", "subject": "PROYECTOS AMBIENTALES", "total": 8, "title": "Horario de clases · SÉPTIMO NIVEL"}, {"sheet": "Nivel 8", "block": "8", "subject": "ESTUDIOS DE IMPACTO AMBIENTAL", "total": 14, "title": "Horario de clases · SÉPTIMO NIVEL"}], "schedule": [{"day": "Martes", "time": "09:00–10:00", "subject": "PROYECTOS AMBIENTALES", "room": "CB-B206", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Martes", "time": "10:00–11:00", "subject": "PROYECTOS AMBIENTALES", "room": "CB-B206", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Martes", "time": "15:00–16:00", "subject": "ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B201", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Martes", "time": "16:00–17:00", "subject": "ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B201", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "11:00–12:00", "subject": "PROYECTOS AMBIENTALES", "room": "CB-C104", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "12:00–13:00", "subject": "PROYECTOS AMBIENTALES", "room": "CB-C104", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "15:00–16:00", "subject": "PRACT. ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B101", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "16:00–17:00", "subject": "PRACT. ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B101", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "17:00–18:00", "subject": "PRACT. ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B101", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "11:00–12:00", "subject": "ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B006", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "12:00–13:00", "subject": "ESTUDIOS DE IMPACTO AMBIENTAL", "room": "CB-B006", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}]}, {"teacher": "MGT. FERNANDA UGUNA", "entries": [{"sheet": "Nivel 2", "block": "2", "subject": "QUÍMICA ANALÍTICA", "total": 8, "title": "Horario de clases · SEGUNDO NIVEL"}], "schedule": [{"day": "Miércoles", "time": "11:00–12:00", "subject": "QUIMICA ANALITICA", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "12:00–13:00", "subject": "QUIMICA ANALITICA", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Viernes", "time": "11:00–12:00", "subject": "PRAC. QUIMICA ANALITICA", "room": "LAB. AMB. / CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Viernes", "time": "12:00–13:00", "subject": "PRAC. QUIMICA ANALITICA", "room": "LAB. AMB. / CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}]}, {"teacher": "MGT. JESSICA CRIOLLO", "entries": [{"sheet": "Nivel 1A", "block": "1A", "subject": "ALGEBRA LINEAL", "total": 9, "title": "Horario de clases · PRIMER NIVEL A"}, {"sheet": "Nivel 4", "block": "4", "subject": "TERMODINÁMICA II", "total": 4, "title": "Horario de clases · CUARTO NIVEL"}, {"sheet": "Nivel 9", "block": "9", "subject": "PRÁCTICAS DE SERVICIO COMUNITARIO", "total": 4, "title": "Horario de clases · NOVENO"}, {"sheet": "Nivel 10", "block": "10", "subject": "PRÁCTICAS LABORALES", "total": 2, "title": "Horario de clases · DECIMO"}], "schedule": [{"day": "Lunes", "time": "11:00–12:00", "subject": "PRÁCTICAS DE SERVICIO COMUNITARIO", "room": "CB-B101", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Lunes", "time": "12:00–13:00", "subject": "PRÁCTICAS DE SERVICIO COMUNITARIO", "room": "CB-B101", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Martes", "time": "07:00–08:00", "subject": "ALGEBRA LINEAL", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Martes", "time": "08:00–09:00", "subject": "ALGEBRA LINEAL", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Martes", "time": "09:00–10:00", "subject": "ALGEBRA LINEAL", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Martes", "time": "11:00–12:00", "subject": "PRAC ALGEBRA LINEAL G2", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Miércoles", "time": "09:00–10:00", "subject": "PRAC ALGEBRA LINEAL G2", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Miércoles", "time": "10:00–11:00", "subject": "PRAC ALGEBRA LINEAL G2", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Miércoles", "time": "12:00–13:00", "subject": "PRÁCTICAS LABORALES", "room": "CB-B102", "level": "Nivel 10", "block": "10", "title": "Horario de clases · DECIMO"}, {"day": "Jueves", "time": "07:00–08:00", "subject": "PRAC ALGEBRA LINEAL G1", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Jueves", "time": "08:00–09:00", "subject": "PRAC ALGEBRA LINEAL G1", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Jueves", "time": "09:00–10:00", "subject": "PRAC ALGEBRA LINEAL G1", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}]}, {"teacher": "MGT. JUAN CARLOS GUANUCHI", "entries": [{"sheet": "Nivel 2", "block": "2", "subject": "MICROBIOLOGÍA AMBIENTAL", "total": 6, "title": "Horario de clases · SEGUNDO NIVEL"}, {"sheet": "Nivel 4", "block": "4", "subject": "OPERACIONES UNITARIAS", "total": 6, "title": "Horario de clases · CUARTO NIVEL"}, {"sheet": "Nivel 4", "block": "4", "subject": "PRACT. OPERACIONES UNITARIAS G1 - G2 AULA", "total": 8, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Lunes", "time": "07:00–08:00", "subject": "MICROBIOLOGÍA AMBIENTAL", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Lunes", "time": "08:00–09:00", "subject": "MICROBIOLOGÍA AMBIENTAL", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Martes", "time": "12:00–13:00", "subject": "PRACT. MICROBIOLOGÍA AMBIENTAL G1", "room": "LAB AMB /CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "09:00–10:00", "subject": "PRAC. OPERACIONES UNITARIAS G1", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "10:00–11:00", "subject": "PRAC. OPERACIONES UNITARIAS G1", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "14:00–15:00", "subject": "OPERACIONES UNITARIAS", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "15:00–16:00", "subject": "OPERACIONES UNITARIAS", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "16:00–17:00", "subject": "OPERACIONES UNITARIAS", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "09:00–10:00", "subject": "PRACTICA OPERACIONES UNITARIAS G2", "room": "LAB OP UNIT", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "10:00–11:00", "subject": "PRACTICA OPERACIONES UNITARIAS G2", "room": "LAB OP UNIT", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Viernes", "time": "09:00–10:00", "subject": "PRAC. OPERACIONES UNITARIAS G2", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Viernes", "time": "10:00–11:00", "subject": "PRAC. OPERACIONES UNITARIAS G2", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}]}, {"teacher": "MGT. JUAN GUANUCHI", "entries": [{"sheet": "Nivel 8", "block": "8", "subject": "PRACT. REMEDIACIÓN AMBIENTAL", "total": 6, "title": "Horario de clases · SÉPTIMO NIVEL"}, {"sheet": "Nivel 9", "block": "9", "subject": "TITULACIÓN FASE I", "total": 4, "title": "Horario de clases · NOVENO"}, {"sheet": "Nivel 10", "block": "10", "subject": "TITULACIÓN FASE II", "total": 2, "title": "Horario de clases · DECIMO"}], "schedule": [{"day": "Jueves", "time": "14:00–15:00", "subject": "PRACT. REMEDIACIÓN AMBIENTAL", "room": "LAB. AMB / CB-B203", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "15:00–16:00", "subject": "PRACT. REMEDIACIÓN AMBIENTAL", "room": "LAB. AMB / CB-B203", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "16:00–17:00", "subject": "PRACT. REMEDIACIÓN AMBIENTAL", "room": "LAB. AMB / CB-B203", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Viernes", "time": "07:00–08:00", "subject": "TITULACIÓN FASE I", "room": "CB-B104", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Viernes", "time": "08:00–09:00", "subject": "TITULACIÓN FASE II", "room": "CB-B104", "level": "Nivel 10", "block": "10", "title": "Horario de clases · DECIMO"}, {"day": "Viernes", "time": "12:00–13:00", "subject": "TITULACIÓN FASE I", "room": "CB-B006", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}]}, {"teacher": "MGT. MARCO RAMIREZ", "entries": [{"sheet": "Nivel 3", "block": "3", "subject": "ANALISIS DE DATOS", "total": 10, "title": "Horario de clases · SEGUNDO NIVEL"}, {"sheet": "Nivel 4", "block": "4", "subject": "TEOR DISTR Y PROBABILIDAD", "total": 8, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Lunes", "time": "07:00–08:00", "subject": "TEORIA DE LA DISTRIBUCIÓN Y PROBABILIDAD", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Lunes", "time": "08:00–09:00", "subject": "TEORIA DE LA DISTRIBUCIÓN Y PROBABILIDAD", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Lunes", "time": "14:00–15:00", "subject": "PRAC. ANALISIS DE DATOS", "room": "CB-C003", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Lunes", "time": "15:00–16:00", "subject": "PRAC. ANALISIS DE DATOS", "room": "CB-C003", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Lunes", "time": "16:00–17:00", "subject": "PRAC. ANALISIS DE DATOS", "room": "CB-C003", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Martes", "time": "07:00–08:00", "subject": "ANALISIS DE DATOS", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Martes", "time": "08:00–09:00", "subject": "ANALISIS DE DATOS", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "07:00–08:00", "subject": "PRAC TEORIA DE LA DISTRIBUCIÓN Y PROBABILIDAD", "room": "CB-C0-07", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "08:00–09:00", "subject": "PRAC TEORIA DE LA DISTRIBUCIÓN Y PROBABILIDAD", "room": "CB-C0-07", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}]}, {"teacher": "MGT. MARIA ELISA DURAN", "entries": [{"sheet": "Nivel 2", "block": "2", "subject": "REALIDAD AMB NAC Y MUNDIAL", "total": 4, "title": "Horario de clases · SEGUNDO NIVEL"}], "schedule": [{"day": "Miércoles", "time": "09:00–10:00", "subject": "REALIDAD AMB NAC Y MUNDIAL", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "10:00–11:00", "subject": "PRACT. REALIDAD AMB NAL Y MUNDIAL", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}]}, {"teacher": "MGT. MATEO PATINO", "entries": [{"sheet": "Nivel 1B", "block": "1B", "subject": "FISICA I", "total": 6, "title": "Horario de clases · PRIMER NIVEL B"}], "schedule": [{"day": "Lunes", "time": "14:00–15:00", "subject": "FISICA I", "room": "CB-B205", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Lunes", "time": "15:00–16:00", "subject": "FISICA I", "room": "CB-B205", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Lunes", "time": "16:00–17:00", "subject": "FISICA I", "room": "CB-B205", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Jueves", "time": "14:00–15:00", "subject": "FISICA I", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Jueves", "time": "15:00–16:00", "subject": "PRAC. FISICA I", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Jueves", "time": "16:00–17:00", "subject": "PRAC. FISICA I", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}]}, {"teacher": "MGT. MONICA ABRIL", "entries": [{"sheet": "Nivel 1B", "block": "1B", "subject": "CÁLCULO DIFERENCIAL", "total": 6, "title": "Horario de clases · PRIMER NIVEL B"}], "schedule": [{"day": "Lunes", "time": "10:00–11:00", "subject": "CÁLCULO DIFERENCIAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Lunes", "time": "11:00–12:00", "subject": "CÁLCULO DIFERENCIAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Lunes", "time": "12:00–13:00", "subject": "CÁLCULO DIFERENCIAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Martes", "time": "15:00–16:00", "subject": "PRAC. CÁLCULO DIFERENCIAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Martes", "time": "16:00–17:00", "subject": "PRAC. CÁLCULO DIFERENCIAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Martes", "time": "17:00–18:00", "subject": "PRAC. CÁLCULO DIFERENCIAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}]}, {"teacher": "MGT. MONICA NARVAEZ", "entries": [{"sheet": "Nivel 1A", "block": "1A", "subject": "PRACT QUIMICA GENERAL G1 G2", "total": 4, "title": "Horario de clases · PRIMER NIVEL A"}, {"sheet": "Nivel 1B", "block": "1B", "subject": "QUIMICA GENERAL", "total": 6, "title": "Horario de clases · PRIMER NIVEL B"}], "schedule": [{"day": "Miércoles", "time": "11:00–12:00", "subject": "QUIMICA GENERAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Miércoles", "time": "12:00–13:00", "subject": "QUIMICA GENERAL", "room": "CB-B005", "level": "Nivel 1B", "block": "1B", "title": "Horario de clases · PRIMER NIVEL B"}, {"day": "Miércoles", "time": "14:00–15:00", "subject": "QUIM. GEN PRACT G1", "room": "CC-C105", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Miércoles", "time": "15:00–16:00", "subject": "QUIM. GEN PRACT G1", "room": "CC-C105", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}]}, {"teacher": "MGT. PABLO JARA", "entries": [{"sheet": "Nivel 3", "block": "3", "subject": "MICROBIOLOGÍA APLICADA", "total": 8, "title": "Horario de clases · SEGUNDO NIVEL"}], "schedule": [{"day": "Lunes", "time": "11:00–12:00", "subject": "MICROBIOLOGIA APLICADA", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Lunes", "time": "12:00–13:00", "subject": "MICROBIOLOGIA APLICADA", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "15:00–16:00", "subject": "PRAC. MICROBIOLOGIA APLICADA", "room": "LAB AMB", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "16:00–17:00", "subject": "PRAC. MICROBIOLOGIA APLICADA", "room": "LAB AMB", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}]}, {"teacher": "MGT. PAUL VANEGAS", "entries": [{"sheet": "Nivel 3", "block": "3", "subject": "LENGUAJES DE PROGRAMACIÓN", "total": 8, "title": "Horario de clases · SEGUNDO NIVEL"}], "schedule": [{"day": "Martes", "time": "17:00–18:00", "subject": "LENGUAJES DE PROGRAMACION", "room": "CB-C003", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Martes", "time": "18:00–19:00", "subject": "LENGUAJES DE PROGRAMACION", "room": "CB-C003", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "17:00–18:00", "subject": "LENGUAJES DE PROGRAMACION", "room": "CB-C003", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "18:00–19:00", "subject": "LENGUAJES DE PROGRAMACION", "room": "CB-C003", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}]}, {"teacher": "MGT. PAULINA ESPINOZA", "entries": [{"sheet": "Nivel 7", "block": "7", "subject": "SEGURIDAD Y SALUD OCUPACIONAL", "total": 8, "title": "Horario de clases · SÉPTIMO NIVEL"}], "schedule": [{"day": "Lunes", "time": "08:00–09:00", "subject": "SEGURIDAD Y SALUD OCUPACIONAL", "room": "CB-B005", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Lunes", "time": "09:00–10:00", "subject": "SEGURIDAD Y SALUD OCUPACIONAL", "room": "CB-B005", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "11:00–12:00", "subject": "PRACT. SEGURIDAD Y SALUD OCUPACIONAL", "room": "CB-B205", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "12:00–13:00", "subject": "PRACT. SEGURIDAD Y SALUD OCUPACIONAL", "room": "CB-B205", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}]}, {"teacher": "PHD ALEX AVILES", "entries": [{"sheet": "Nivel 3", "block": "3", "subject": "HIDRAULICA", "total": 10, "title": "Horario de clases · SEGUNDO NIVEL"}, {"sheet": "Nivel 6", "block": "6", "subject": "METEOROLOGÍA Y CLIMATOLOGÍA", "total": 12, "title": "Horario de clases · SEXTO NIVEL"}], "schedule": [{"day": "Lunes", "time": "07:00–08:00", "subject": "PRAC. HIDRAULICA", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Lunes", "time": "08:00–09:00", "subject": "PRAC. HIDRAULICA", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "07:00–08:00", "subject": "METEOROLOGÌA Y CLIMATOLOGÌA", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Miércoles", "time": "08:00–09:00", "subject": "METEOROLOGÌA Y CLIMATOLOGÌA", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Miércoles", "time": "09:00–10:00", "subject": "METEOTOLOGÌA Y CLIMATOLOGÌA", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Miércoles", "time": "10:00–11:00", "subject": "HIDRAULICA", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "11:00–12:00", "subject": "HIDRAULICA", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Miércoles", "time": "12:00–13:00", "subject": "HIDRAULICA", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Viernes", "time": "07:00–08:00", "subject": "METEOROLOGÌA Y CLIMATOLOGÌA", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Viernes", "time": "08:00–09:00", "subject": "METEOROLOGÌA Y CLIMATOLOGÌA", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}, {"day": "Viernes", "time": "09:00–10:00", "subject": "METEOROLOGÌA Y CLIMATOLOGÌA", "room": "CB-B102", "level": "Nivel 6", "block": "6", "title": "Horario de clases · SEXTO NIVEL"}]}, {"teacher": "PHD ANDRES MONTERO", "entries": [{"sheet": "Nivel 5", "block": "5", "subject": "FUENTES NO CONVENCIONALES DE ENERGÌA", "total": 8, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Lunes", "time": "09:00–10:00", "subject": "FUENTES NO CONVENCIONALES DE ENERGIA", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Lunes", "time": "10:00–11:00", "subject": "FUENTES NO CONVENCIONALES DE ENERGIA", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "14:00–15:00", "subject": "FUENTES NO CONVENCIONALES DE ENERGIA", "room": "CB-B103", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "15:00–16:00", "subject": "FUENTES NO CONVENCIONALES DE ENERGIA", "room": "CB-B103", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}]}, {"teacher": "PHD DANILO MEJIA", "entries": [{"sheet": "Nivel 4", "block": "4", "subject": "CARTOGRAFÍA Y SIG", "total": 8, "title": "Horario de clases · CUARTO NIVEL"}, {"sheet": "Nivel 5", "block": "5", "subject": "SENSORES REMOTOS", "total": 8, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Lunes", "time": "11:00–12:00", "subject": "CARTOGRAFÍA Y SIG", "room": "CB-C004", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Lunes", "time": "12:00–13:00", "subject": "CARTOGRAFÍA Y SIG", "room": "CB-C004", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Martes", "time": "11:00–12:00", "subject": "SENSORES REMOTOS", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Martes", "time": "12:00–13:00", "subject": "SENSORES REMOTOS", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Martes", "time": "15:00–16:00", "subject": "PRAC. CARTOGRAFÍA Y SIG", "room": "CB-C003", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Martes", "time": "16:00–17:00", "subject": "PRAC. CARTOGRAFÍA Y SIG", "room": "CB-C003", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "11:00–12:00", "subject": "PRACT SENSORES REMOTOS", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "12:00–13:00", "subject": "PRACT SENSORES REMOTOS", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}]}, {"teacher": "PHD DIANA MOSCOSO", "entries": [{"sheet": "Nivel 7", "block": "7", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "total": 12, "title": "Horario de clases · SÉPTIMO NIVEL"}], "schedule": [{"day": "Lunes", "time": "14:00–15:00", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "room": "CB-B102", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Lunes", "time": "15:00–16:00", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "room": "CB-B102", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Martes", "time": "09:00–10:00", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "room": "CB-C104", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Martes", "time": "10:00–11:00", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "room": "CB-C104", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "14:00–15:00", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "room": "CB-B103", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "15:00–16:00", "subject": "CALIDAD Y TRATAMIENTO DEL AIRE", "room": "CB-B103", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}]}, {"teacher": "PHD FERNANDO GARCIA", "entries": [{"sheet": "Nivel 7", "block": "7", "subject": "MANEJO INTEGRAL DEL AGUA", "total": 12, "title": "Horario de clases · SÉPTIMO NIVEL"}], "schedule": [{"day": "Martes", "time": "07:00–08:00", "subject": "MANEJO INTEGRAL DEL AGUA", "room": "CB-B103", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Martes", "time": "08:00–09:00", "subject": "MANEJO INTEGRAL DEL AGUA", "room": "CB-B103", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "07:00–08:00", "subject": "MANEJO INTEGRAL DEL AGUA", "room": "CB-C104", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "08:00–09:00", "subject": "PRACT MANEJO INTEGRAL DEL AGUA", "room": "CB-C104", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "09:00–10:00", "subject": "PRACT. MANEJO INTEGRAL DEL AGUA", "room": "LAB AMB/CB-B103", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Jueves", "time": "10:00–11:00", "subject": "PRACT. MANEJO INTEGRAL DEL AGUA", "room": "LAB AMB/CB-B103", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}]}, {"teacher": "PHD GALO CARRILLO", "entries": [{"sheet": "Nivel 3", "block": "3", "subject": "TERMODINAMICA I", "total": 4, "title": "Horario de clases · SEGUNDO NIVEL"}], "schedule": []}, {"teacher": "PHD JORGE DELGADO", "entries": [{"sheet": "Nivel 7", "block": "7", "subject": "DESARROLLO DE EMPRENDEDORES", "total": 4, "title": "Horario de clases · SÉPTIMO NIVEL"}], "schedule": [{"day": "Miércoles", "time": "09:00–10:00", "subject": "DESARROLLO DE EMPRENDEDORES", "room": "CB-C104", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Miércoles", "time": "10:00–11:00", "subject": "DESARROLLO DE EMPRENDEDORES", "room": "CB-C104", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}]}, {"teacher": "PHD JOSE ASTUDILLO", "entries": [{"sheet": "Nivel 7", "block": "7", "subject": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL", "total": 8, "title": "Horario de clases · SÉPTIMO NIVEL"}], "schedule": [{"day": "Jueves", "time": "11:00–12:00", "subject": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL", "room": "CB-B103", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Viernes", "time": "08:00–09:00", "subject": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL", "room": "CB-C104", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Viernes", "time": "09:00–10:00", "subject": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL", "room": "CB-C104", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Viernes", "time": "10:00–11:00", "subject": "COMUNICACIÓN Y MEDIACIÓN AMBIENTAL", "room": "CB-C104", "level": "Nivel 7", "block": "7", "title": "Horario de clases · SÉPTIMO NIVEL"}]}, {"teacher": "PHD JUAN FERNANDO CISNEROS", "entries": [{"sheet": "Nivel 6", "block": "6", "subject": "GESTION DE RESIDUOS SOLIDOS", "total": 8, "title": "Horario de clases · SEXTO NIVEL"}, {"sheet": "Nivel 9", "block": "9", "subject": "MANEJO Y RECUPERACIÓN DE MATERIALES", "total": 8, "title": "Horario de clases · NOVENO"}, {"sheet": "Nivel 9", "block": "9", "subject": "SANEAMIENTO AMBIENTAL", "total": 10, "title": "Horario de clases · NOVENO"}], "schedule": [{"day": "Lunes", "time": "09:00–10:00", "subject": "MANEJO Y RECUPERACIÓN DE MATERIALES", "room": "CB-B204", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Lunes", "time": "10:00–11:00", "subject": "MANEJO Y RECUPERACIÓN DE MATERIALES", "room": "CB-B204", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Martes", "time": "10:00–11:00", "subject": "SANEAMIENTO AMBIENTAL", "room": "CB-B102", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Martes", "time": "11:00–12:00", "subject": "SANEAMIENTO AMBIENTAL", "room": "CB-B102", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Miércoles", "time": "07:00–08:00", "subject": "MANEJO Y RECUPERACIÓN DE MATERIALES", "room": "CB-B101", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Miércoles", "time": "08:00–09:00", "subject": "MANEJO Y RECUPERACIÓN DE MATERIALES", "room": "CB-B101", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Jueves", "time": "09:00–10:00", "subject": "PRAC SANEAMIENTO AMBIENTAL", "room": "CB-B006", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Jueves", "time": "10:00–11:00", "subject": "PRAC SANEAMIENTO AMBIENTAL", "room": "CB-B006", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}, {"day": "Jueves", "time": "11:00–12:00", "subject": "PRAC SANEAMIENTO AMBIENTAL", "room": "CB-B006", "level": "Nivel 9", "block": "9", "title": "Horario de clases · NOVENO"}]}, {"teacher": "PHD OTILIA CORDERO", "entries": [{"sheet": "Nivel 3", "block": "3", "subject": "METODOLOGÍA DE INVESTIGACIÓN", "total": 4, "title": "Horario de clases · SEGUNDO NIVEL"}, {"sheet": "Nivel 5", "block": "5", "subject": "SOCIOLOGIA AMBIENTAL", "total": 6, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Lunes", "time": "07:00–08:00", "subject": "SOCIOLOGIA AMBIENTAL", "room": "CB-B102", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Lunes", "time": "08:00–09:00", "subject": "SOCIOLOGIA AMBIENTAL", "room": "CB-B102", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Martes", "time": "14:00–15:00", "subject": "SOCIOLOGIA AMBIENTAL", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Martes", "time": "15:00–16:00", "subject": "METODOLOGÍA DE INVESTIGACIÓN", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Martes", "time": "16:00–17:00", "subject": "METODOLOGÍA DE INVESTIGACIÓN", "room": "CB-B103", "level": "Nivel 3", "block": "3", "title": "Horario de clases · SEGUNDO NIVEL"}]}, {"teacher": "PHD PABLO JARA", "entries": [{"sheet": "Nivel 8", "block": "8", "subject": "REMEDIACIÓN AMBIENTAL", "total": 8, "title": "Horario de clases · SÉPTIMO NIVEL"}], "schedule": [{"day": "Lunes", "time": "14:00–15:00", "subject": "REMEDIACIÓN AMBIENTAL", "room": "CB-B006", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Lunes", "time": "15:00–16:00", "subject": "REMEDIACIÓN AMBIENTAL", "room": "CB-B006", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Martes", "time": "07:00–08:00", "subject": "REMEDIACIÓN AMBIENTAL", "room": "CB-B206", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Martes", "time": "08:00–09:00", "subject": "REMEDIACIÓN AMBIENTAL", "room": "CB-B206", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}]}, {"teacher": "PHD RUBEN JERVES", "entries": [{"sheet": "Nivel 2", "block": "2", "subject": "INTRODUCCIÓN A LA ING. AMBIENTAL", "total": 8, "title": "Horario de clases · SEGUNDO NIVEL"}, {"sheet": "Nivel 4", "block": "4", "subject": "MÉTODOS NUMÉRICOS", "total": 8, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Lunes", "time": "14:00–15:00", "subject": "INTROD. A LA ING. AMBIENTAL", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Lunes", "time": "15:00–16:00", "subject": "INTROD. A LA ING. AMBIENTAL", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Lunes", "time": "16:00–17:00", "subject": "INTROD. A LA ING. AMBIENTAL", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Martes", "time": "14:00–15:00", "subject": "INTROD. A LA ING. AMBIENTAL", "room": "CB-B101", "level": "Nivel 2", "block": "2", "title": "Horario de clases · SEGUNDO NIVEL"}, {"day": "Jueves", "time": "14:00–15:00", "subject": "MÉTODOS NUMÉRICOS", "room": "CB-C003", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "15:00–16:00", "subject": "MÉTODOS NUMÉRICOS", "room": "CB-C003", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Viernes", "time": "14:00–15:00", "subject": "PRAC. MÉTODOS NUMÉRICOS", "room": "CB-C003", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Viernes", "time": "15:00–16:00", "subject": "PRAC. MÉTODOS NUMÉRICOS", "room": "CB-C003", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}]}, {"teacher": "PHD. ALEX AVILES", "entries": [{"sheet": "Nivel 5", "block": "5", "subject": "HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "total": 12, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Martes", "time": "07:00–08:00", "subject": "HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Martes", "time": "08:00–09:00", "subject": "HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Martes", "time": "09:00–10:00", "subject": "HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "07:00–08:00", "subject": "PRACT HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "room": "CB-B101", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "08:00–09:00", "subject": "PRACT HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "room": "CB-B101", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Jueves", "time": "09:00–10:00", "subject": "PRACT HIDROLOGIA Y MANEJO DE CUENCAS HIDROGRAFICAS", "room": "CB-B101", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}]}, {"teacher": "PHD. ANDRES MONTERO", "entries": [{"sheet": "Nivel 10", "block": "10", "subject": "EFICIENCIA ENERGÉTICA", "total": 8, "title": "Horario de clases · DECIMO"}], "schedule": [{"day": "Jueves", "time": "11:00–12:00", "subject": "EFICIENCIA ENERGÉTICA", "room": "CB-C104", "level": "Nivel 10", "block": "10", "title": "Horario de clases · DECIMO"}, {"day": "Jueves", "time": "12:00–13:00", "subject": "EFICIENCIA ENERGÉTICA", "room": "CB-C104", "level": "Nivel 10", "block": "10", "title": "Horario de clases · DECIMO"}, {"day": "Viernes", "time": "09:00–10:00", "subject": "EFICIENCIA ENERGÉTICA", "room": "CB-B202", "level": "Nivel 10", "block": "10", "title": "Horario de clases · DECIMO"}, {"day": "Viernes", "time": "10:00–11:00", "subject": "EFICIENCIA ENERGÉTICA", "room": "CB-B202", "level": "Nivel 10", "block": "10", "title": "Horario de clases · DECIMO"}]}, {"teacher": "PHD. DANILO MEJIA", "entries": [{"sheet": "Nivel 1A", "block": "1A", "subject": "BIOLOGIA", "total": 3, "title": "Horario de clases · PRIMER NIVEL A"}], "schedule": [{"day": "Lunes", "time": "09:00–10:00", "subject": "BIOLOGIA DEL MEDIO AMBIENTE", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Lunes", "time": "10:00–11:00", "subject": "BIOLOGIA DEL MEDIO AMBIENTE", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Jueves", "time": "10:00–11:00", "subject": "PRACT. BIOLOGIA DEL MEDIO AMBIENTE", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}]}, {"teacher": "PHD. DIANA MOSCOSO", "entries": [{"sheet": "Nivel 1A", "block": "1A", "subject": "QUIMICA GENERAL", "total": 2, "title": "Horario de clases · PRIMER NIVEL A"}, {"sheet": "Nivel 10", "block": "10", "subject": "EMISIONES ATMOSFÉRICAS", "total": 8, "title": "Horario de clases · DECIMO"}], "schedule": [{"day": "Miércoles", "time": "11:00–12:00", "subject": "QUIMICA GENERAL", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Miércoles", "time": "12:00–13:00", "subject": "QUIMICA GENERAL", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Jueves", "time": "09:00–10:00", "subject": "EMISIONES ATMOSFÉRICAS", "room": "CB-B206", "level": "Nivel 10", "block": "10", "title": "Horario de clases · DECIMO"}, {"day": "Jueves", "time": "10:00–11:00", "subject": "EMISIONES ATMOSFÉRICAS", "room": "CB-B206", "level": "Nivel 10", "block": "10", "title": "Horario de clases · DECIMO"}, {"day": "Viernes", "time": "11:00–12:00", "subject": "EMISIONES ATMOSFÉRICAS", "room": "CB-B104", "level": "Nivel 10", "block": "10", "title": "Horario de clases · DECIMO"}, {"day": "Viernes", "time": "12:00–13:00", "subject": "EMISIONES ATMOSFÉRICAS", "room": "CB-B104", "level": "Nivel 10", "block": "10", "title": "Horario de clases · DECIMO"}]}, {"teacher": "PHD. GALO CARRILLO", "entries": [{"sheet": "Nivel 8", "block": "8", "subject": "MODELACIÓN AMBIENTAL", "total": 8, "title": "Horario de clases · SÉPTIMO NIVEL"}, {"sheet": "Nivel 9", "block": "9", "subject": "GESTION DE RECURSOS NATURALES RENOVABLES Y NO RENOVABLES", "total": 8, "title": "Horario de clases · NOVENO"}], "schedule": [{"day": "Lunes", "time": "09:00–10:00", "subject": "PRACT. MODELACIÓN AMBIENTAL", "room": "CB-C104", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Lunes", "time": "10:00–11:00", "subject": "PRACT. MODELACIÓN AMBIENTAL", "room": "CB-C104", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Martes", "time": "11:00–12:00", "subject": "MODELACIÓN AMBIENTAL", "room": "CB-C004", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}, {"day": "Martes", "time": "12:00–13:00", "subject": "MODELACIÓN AMBIENTAL", "room": "CB-C004", "level": "Nivel 8", "block": "8", "title": "Horario de clases · SÉPTIMO NIVEL"}]}, {"teacher": "PHD. HENRIETTA HAMPEL", "entries": [{"sheet": "Nivel 4", "block": "4", "subject": "ECOLOGIA GENERAL", "total": 8, "title": "Horario de clases · CUARTO NIVEL"}, {"sheet": "Nivel 5", "block": "5", "subject": "ECOLOGIA APLICADA", "total": 8, "title": "Horario de clases · CUARTO NIVEL"}], "schedule": [{"day": "Lunes", "time": "09:00–10:00", "subject": "ECOLOGIA GENERAL", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Lunes", "time": "10:00–11:00", "subject": "ECOLOGIA GENERAL", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Lunes", "time": "11:00–12:00", "subject": "ECOLOGIA APLICADA", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Lunes", "time": "12:00–13:00", "subject": "ECOLOGIA APLICADA", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "09:00–10:00", "subject": "ECOLOGIA APLICADA", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "10:00–11:00", "subject": "ECOLOGIA APLICADA", "room": "CB-B006", "level": "Nivel 5", "block": "5", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "11:00–12:00", "subject": "ECOLOGIA GENERAL", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}, {"day": "Miércoles", "time": "12:00–13:00", "subject": "ECOLOGIA GENERAL", "room": "CB-B104", "level": "Nivel 4", "block": "4", "title": "Horario de clases · CUARTO NIVEL"}]}, {"teacher": "PHD. LOURDES JARA", "entries": [{"sheet": "Nivel 1A", "block": "1A", "subject": "CÁLCULO DIFERENCIAL", "total": 6, "title": "Horario de clases · PRIMER NIVEL A"}, {"sheet": "Nivel 2", "block": "2", "subject": "CÁLCULO INTEGRAL", "total": 12, "title": "Horario de clases · SEGUNDO NIVEL"}], "schedule": [{"day": "Lunes", "time": "11:00–12:00", "subject": "CÁLCULO DIFERENCIAL", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Lunes", "time": "12:00–13:00", "subject": "CÁLCULO DIFERENCIAL", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Jueves", "time": "11:00–12:00", "subject": "CÁLCULO DIFERENCIAL", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Jueves", "time": "12:00–13:00", "subject": "PRÁCT. CÁLCULO DIFERENCIAL G1", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Viernes", "time": "09:00–10:00", "subject": "PRÁCT. CÁLCULO DIFERENCIAL G1", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}, {"day": "Viernes", "time": "10:00–11:00", "subject": "PRÁCT. CÁLCULO DIFERENCIAL G1", "room": "CB-C001", "level": "Nivel 1A", "block": "1A", "title": "Horario de clases · PRIMER NIVEL A"}]}]}
+const days = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
 
-const teacherSearch = document.getElementById('teacherSearch');
-const teacherOptions = document.getElementById('teacherOptions');
-const levelSelect = document.getElementById('levelSelect');
-const teacherSummary = document.getElementById('teacherSummary');
-const teacherSchedule = document.getElementById('teacherSchedule');
-const levelView = document.getElementById('levelView');
-
-function normalizeText(text) {
-  return (text || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+function byId(id) { return document.getElementById(id); }
+function escapeHtml(str) {
+  return (str || "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+function normalizeText(str) {
+  return (str || '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
     .toUpperCase()
-    .replace(/\bPHD\.?\b/g, "PHD")
-    .replace(/\bMGT\.?\b/g, "MGT")
-    .replace(/[^A-Z0-9 ]/g, " ")
-    .replace(/\s+/g, " ")
+    .replace(/PH\.?D\.?/g, 'PHD')
+    .replace(/PHD\.?/g, 'PHD')
+    .replace(/MGT\.?/g, 'MGT')
+    .replace(/MSC\.?/g, 'MSC')
+    .replace(/MSC\.?/g, 'MSC')
+    .replace(/ING\.?/g, 'ING')
+    .replace(/\./g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
 }
-
-function buildTeacherList() {
-  teacherOptions.innerHTML = "";
-  DATA.teachers.forEach(t => {
-    const opt = document.createElement('option');
-    opt.value = t.name;
-    teacherOptions.appendChild(opt);
+function canonicalTeacherName(name) {
+  return normalizeText(name);
+}
+function pickDisplayName(names) {
+  if (!names || !names.length) return '';
+  const normalized = names.map(n => canonicalTeacherName(n));
+  return normalized.slice().sort((a,b) => a.length - b.length || a.localeCompare(b, 'es'))[0];
+}
+function uniqueBy(items, keyFn) {
+  const seen = new Set();
+  return items.filter(item => {
+    const key = keyFn(item);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
   });
 }
-
-function buildLevelList() {
-  levelSelect.innerHTML = "";
-  DATA.levels.forEach((lvl, idx) => {
-    const opt = document.createElement('option');
-    opt.value = lvl.name;
-    opt.textContent = lvl.name;
-    if (idx === 0) opt.selected = true;
-    levelSelect.appendChild(opt);
-  });
-}
-
-function findTeacher(query) {
-  const q = normalizeText(query);
-  if (!q) return null;
-  const exact = DATA.teachers.find(t => t.name === q);
-  if (exact) return exact;
-  return DATA.teachers.find(t => t.name.includes(q));
-}
-
-function renderTeacher(teacher) {
-  if (!teacher) {
-    teacherSummary.innerHTML = '<div class="note">Escriba un apellido o nombre para consultar un docente.</div>';
-    teacherSchedule.innerHTML = '<div class="note">Aquí aparecerá el horario identificado.</div>';
-    return;
-  }
-
-  const variants = teacher.variants && teacher.variants.length
-    ? `<div class="small">Variantes encontradas en el archivo original: ${teacher.variants.join(" · ")}</div>`
-    : "";
-
-  const courses = teacher.courses.map(c =>
-    `<li><strong>${c.subject}</strong><br><span class="small">${c.level} · ${c.total} hora(s)</span></li>`
-  ).join("");
-
-  teacherSummary.innerHTML = `
-    <span class="badge">${teacher.courses.length} asignatura(s)</span>
-    <div class="teacher-name">${teacher.name}</div>
-    ${variants}
-    <p class="small">Bloques y materias vinculadas en el horario consolidado.</p>
-    <ul class="list">${courses}</ul>
-  `;
-
-  if (!teacher.slots.length) {
-    teacherSchedule.innerHTML = '<div class="note">No se encontraron franjas horarias asociadas a este docente.</div>';
-    return;
-  }
-
-  const byDay = {};
-  DATA.days.forEach(d => byDay[d] = []);
-  teacher.slots.forEach(s => byDay[s.day].push(s));
-
-  const rows = DATA.days.map(day => {
-    const slots = byDay[day];
-    if (!slots.length) {
-      return `<tr><th>${day}</th><td class="empty">Sin clases registradas</td></tr>`;
+function buildNormalizedTeachers() {
+  const grouped = new Map();
+  (DATA.teachers || []).forEach(teacher => {
+    const key = canonicalTeacherName(teacher.teacher);
+    if (!grouped.has(key)) {
+      grouped.set(key, { teacher: canonicalTeacherName(teacher.teacher), variants: [canonicalTeacherName(teacher.teacher)], entries: [], schedule: [] });
     }
-    const content = slots.map(s => `
-      <div class="slot" style="margin-bottom:8px">
-        <strong>${s.time} · ${s.course}</strong>
-        <div>${s.level}</div>
-        ${s.room ? `<div class="room">Aula: ${s.room}</div>` : ""}
+    const item = grouped.get(key);
+    item.variants.push(canonicalTeacherName(teacher.teacher));
+    item.entries.push(...(teacher.entries || []));
+    item.schedule.push(...(teacher.schedule || []));
+  });
+  return Array.from(grouped.entries()).map(([key, item]) => ({
+    key,
+    teacher: pickDisplayName(item.variants),
+    variants: uniqueBy(item.variants, v => canonicalTeacherName(v)).sort((a,b) => a.localeCompare(b, 'es')), 
+    entries: uniqueBy(item.entries, e => [e.subject,e.block,e.sheet,e.total].join('|')),
+    schedule: uniqueBy(item.schedule, s => [s.day,s.time,s.subject,s.room,s.block,s.sheet].join('|')).sort((a,b) => {
+      const d = days.indexOf(a.day) - days.indexOf(b.day);
+      return d !== 0 ? d : String(a.time).localeCompare(String(b.time), 'es');
+    })
+  })).sort((a,b) => a.teacher.localeCompare(b.teacher, 'es'));
+}
+const TEACHERS = buildNormalizedTeachers();
+
+function fillStats() {
+  byId('stat-levels').textContent = DATA.summary.levels;
+  byId('stat-teachers').textContent = TEACHERS.length;
+  byId('stat-courses').textContent = DATA.summary.courses;
+}
+
+function renderLevelCards() {
+  const container = byId('level-grid');
+  container.innerHTML = DATA.levels.map((level, idx) => `
+    <div class="level-card" data-sheet="${escapeHtml(level.sheet)}">
+      <div class="chip">Bloque ${escapeHtml(level.block)}</div>
+      <div style="font-weight:700; font-size:18px; margin-bottom:6px;">${escapeHtml(level.sheet)}</div>
+      <div class="muted" style="min-height:38px;">${escapeHtml(level.title.replace('Horario de clases · ',''))}</div>
+      <div style="margin-top:10px; font-size:13px; color:var(--muted);">
+        ${level.courses.length} asignaturas registradas
       </div>
-    `).join("");
-    return `<tr><th>${day}</th><td>${content}</td></tr>`;
-  }).join("");
-
-  teacherSchedule.innerHTML = `
-    <div class="schedule-wrap">
-      <table>
-        <thead><tr><th style="width:140px">Día</th><th>Detalle</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
     </div>
-  `;
+  `).join('');
+  container.querySelectorAll('.level-card').forEach(card => {
+    card.addEventListener('click', () => renderLevelDetail(card.dataset.sheet));
+  });
+  if (DATA.levels[0]) renderLevelDetail(DATA.levels[0].sheet);
 }
 
-function renderLevel(levelName) {
-  const level = DATA.levels.find(l => l.name === levelName) || DATA.levels[0];
-  if (!level) return;
+function renderLevelDetail(sheet) {
+  const level = DATA.levels.find(l => l.sheet === sheet);
+  const holder = byId('level-detail');
+  if (!level) {
+    holder.innerHTML = `<div class="empty-state">No se encontró información para este nivel.</div>`;
+    return;
+  }
 
-  const toolbar = `
-    <div class="toolbar">
-      <span class="badge">${level.subjects.length} asignatura(s)</span>
-      <button class="secondary" onclick="window.scrollTo({top:0, behavior:'smooth'})">Ir arriba</button>
+  const courseRows = level.courses.map(c => `
+    <tr>
+      <td><strong>${escapeHtml(c.subject)}</strong></td>
+      <td>${c.hours_c ?? ''}</td>
+      <td>${c.hours_p ?? ''}</td>
+      <td>${c.hours_t ?? ''}</td>
+      <td>${c.total ?? ''}</td>
+      <td>${escapeHtml(c.teacher || '')}</td>
+    </tr>
+  `).join('');
+
+  const desktopSchedule = `
+    <div class="schedule-grid">
+      <div class="sched-head">Hora</div>
+      ${days.map(d => `<div class="sched-head">${d}</div>`).join('')}
+      ${level.schedule.map(row => `
+        <div class="sched-time">${escapeHtml(row.time)}</div>
+        ${days.map(day => {
+          const slot = row.slots[day];
+          return slot
+            ? `<div class="sched-cell"><div class="course">${escapeHtml(slot.subject)}</div><div class="room">Aula: ${escapeHtml(slot.room || 'No indicada')}</div></div>`
+            : `<div class="sched-cell empty"></div>`;
+        }).join('')}
+      `).join('')}
     </div>
   `;
 
-  const headRow = `<tr><th style="width:105px">Hora</th>${DATA.days.map(d => `<th>${d}</th>`).join("")}</tr>`;
-  const bodyRows = level.grid.map(row => {
-    return `<tr>
-      <th>${row.time}</th>
-      ${DATA.days.map(day => {
-        const cell = row.days[day];
-        if (!cell) return '<td class="empty">—</td>';
-        return `<td>
-          <div class="slot">
-            <strong>${cell.course}</strong>
-            ${cell.room ? `<div class="room">Aula: ${cell.room}</div>` : ""}
-            ${cell.teacher ? `<div class="teacher">${cell.teacher}</div>` : ""}
+  const mobileSchedule = `
+    <div class="mobile-schedule">
+      ${level.schedule.map(row => `
+        <div class="sched-row">
+          <div class="sched-time">${escapeHtml(row.time)}</div>
+          ${days.map(day => {
+            const slot = row.slots[day];
+            return `<div class="sched-mobile-day">${day}</div>` +
+              (slot
+                ? `<div class="sched-cell"><div class="course">${escapeHtml(slot.subject)}</div><div class="room">Aula: ${escapeHtml(slot.room || 'No indicada')}</div></div>`
+                : `<div class="sched-cell empty"><div class="room">Sin clase</div></div>`);
+          }).join('')}
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  holder.innerHTML = `
+    <div class="detail-grid">
+      <div class="panel">
+        <h3>${escapeHtml(level.title)}</h3>
+        <div class="panel-body">
+          <div class="chip">Bloque ${escapeHtml(level.block)}</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Asignatura</th>
+                  <th>H. C</th>
+                  <th>H. P</th>
+                  <th>H. T</th>
+                  <th>Total</th>
+                  <th>Docente</th>
+                </tr>
+              </thead>
+              <tbody>${courseRows}</tbody>
+            </table>
           </div>
-        </td>`;
-      }).join("")}
-    </tr>`;
-  }).join("");
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Horario semanal</h3>
+        <div class="panel-body">
+          <div class="desktop-only">${desktopSchedule}</div>
+          <div class="mobile-only">${mobileSchedule}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  adaptResponsiveSchedule();
+}
 
-  const unassigned = (DATA.unassignedByLevel[level.name] || []);
-  const note = unassigned.length
-    ? `<div class="note" style="margin:0 0 14px 0">Se detectaron ${unassigned.length} bloque(s) no vinculados explícitamente a un docente en el archivo fuente. Se mantienen visibles en la tabla para revisión.</div>`
-    : "";
+function adaptResponsiveSchedule() {
+  const mobile = window.innerWidth <= 980;
+  document.querySelectorAll('.desktop-only').forEach(el => el.style.display = mobile ? 'none' : 'block');
+  document.querySelectorAll('.mobile-only').forEach(el => el.style.display = mobile ? 'block' : 'none');
+}
 
-  levelView.innerHTML = `
-    ${toolbar}
-    ${note}
-    <div class="schedule-wrap">
-      <table>
-        <thead>${headRow}</thead>
-        <tbody>${bodyRows}</tbody>
-      </table>
+function populateTeachers() {
+  const sel = byId('teacher-select');
+  sel.innerHTML = `<option value="">Selecciona un docente</option>` + TEACHERS.map(t => {
+    return `<option value="${escapeHtml(t.teacher)}">${escapeHtml(t.teacher)}</option>`;
+  }).join('');
+}
+
+function renderTeacher(name) {
+  const holder = byId('teacher-detail');
+  const teacher = TEACHERS.find(t => t.teacher === name || t.key === normalizeText(name));
+  if (!teacher) {
+    holder.className = 'empty-state';
+    holder.innerHTML = 'Usa la búsqueda rápida superior para seleccionar un docente y ver el detalle.';
+    return;
+  }
+
+  const grouped = days.map(day => ({
+    day,
+    slots: teacher.schedule.filter(s => s.day === day)
+  })).filter(g => g.slots.length > 0);
+
+  holder.className = '';
+  holder.innerHTML = `
+    <div class="teacher-result">
+      <div class="teacher-card">
+        <div class="chip">${teacher.entries.length} asignatura(s)</div>
+        <h3>${escapeHtml(teacher.teacher)}</h3>
+        <div class="muted">Bloques y materias vinculadas en el horario consolidado.</div>
+        
+        <ul>
+          ${teacher.entries.map(e => `
+            <li><strong>${escapeHtml(e.subject)}</strong><br><span class="muted">Bloque ${escapeHtml(e.block)} · ${escapeHtml(e.sheet)} · ${e.total ?? ''} horas</span></li>
+          `).join('')}
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3>Horario identificado</h3>
+        <div class="panel-body">
+          <div class="day-filter muted" style="margin-bottom:12px;">Vista organizada por día para revisión rápida desde celular o computador.</div>
+          ${grouped.length ? `
+            <div class="day-cards">
+              ${grouped.map(group => `
+                <div class="day-card">
+                  <h4>${group.day}</h4>
+                  ${group.slots.map(slot => `
+                    <div class="slot">
+                      <div class="slot-time">${escapeHtml(slot.time)}</div>
+                      <div><strong>${escapeHtml(slot.subject)}</strong></div>
+                      <div class="muted">Aula: ${escapeHtml(slot.room || 'No indicada')}</div>
+                      <div class="muted">Bloque ${escapeHtml(slot.block)} · ${escapeHtml(slot.level)}</div>
+                    </div>
+                  `).join('')}
+                </div>
+              `).join('')}
+            </div>
+          ` : `<div class="empty-state">No se pudieron vincular franjas horarias exactas para este docente en la reconstrucción del horario.</div>`}
+        </div>
+      </div>
     </div>
   `;
 }
 
-teacherSearch.addEventListener('input', e => {
-  const teacher = findTeacher(e.target.value);
-  renderTeacher(teacher);
-});
+function filterTeacherOptions(term) {
+  const sel = byId('teacher-select');
+  const q = normalizeText(term);
+  const filtered = !q ? TEACHERS : TEACHERS.filter(t => {
+    const teacherMatch = t.key.includes(q);
+    const variantMatch = (t.variants || []).some(v => normalizeText(v).includes(q));
+    return teacherMatch || variantMatch;
+  });
+  sel.innerHTML = `<option value="">Selecciona un docente</option>` + filtered.map(t => {
+    return `<option value="${escapeHtml(t.teacher)}">${escapeHtml(t.teacher)}</option>`;
+  }).join('');
+  if (filtered.length === 1) {
+    sel.value = filtered[0].teacher;
+    renderTeacher(filtered[0].teacher);
+  }
+}
 
-levelSelect.addEventListener('change', e => renderLevel(e.target.value));
+function init() {
+  fillStats();
+  renderLevelCards();
+  populateTeachers();
+  adaptResponsiveSchedule();
 
-buildTeacherList();
-buildLevelList();
-renderTeacher(null);
-renderLevel(DATA.levels[0] && DATA.levels[0].name);
+  byId('teacher-select').addEventListener('change', e => renderTeacher(e.target.value));
+  byId('teacher-search').addEventListener('input', e => filterTeacherOptions(e.target.value));
+  byId('btn-clear-teacher').addEventListener('click', () => {
+    byId('teacher-search').value = '';
+    populateTeachers();
+    renderTeacher('');
+  });
+  window.addEventListener('resize', adaptResponsiveSchedule);
+}
+init();
 </script>
 </body>
 </html>
