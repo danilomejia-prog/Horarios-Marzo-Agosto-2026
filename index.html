@@ -4,8 +4,7 @@
 <style>
 :root{--bg:#f4f7fb;--card:#fff;--line:#d7e2ee;--text:#143a61;--muted:#5b728b;--accent:#1f5fa8;--soft:#eaf2fb;}
 *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
-.container{max-width:1450px;margin:0 auto;padding:22px} .hero{background:linear-gradient(135deg,#0f3b68,#1e67a8);color:#fff;border-radius:20px;padding:26px 28px;margin-bottom:18px}
-.hero h1{margin:0 0 8px;font-size:32px} .hero p{margin:0;font-size:16px;opacity:.96}
+.container{max-width:1450px;margin:0 auto;padding:22px} .hero{position:relative;background:linear-gradient(135deg,#0f3b68,#1e67a8);color:#fff;border-radius:20px;padding:26px 290px 26px 28px;margin-bottom:18px;min-height:150px;display:flex;flex-direction:column;justify-content:center}\n.hero h1{margin:0 0 8px;font-size:32px} .hero p{margin:0;font-size:16px;opacity:.96} .hero-logo{position:absolute;top:18px;right:22px;max-width:230px;width:26vw;min-width:150px;height:auto} @media (max-width: 860px){.hero{padding:20px 20px 110px 20px;min-height:auto}.hero-logo{top:16px;right:16px;max-width:170px;width:40vw}}
 .grid-top,.result-grid{display:grid;grid-template-columns:1.2fr .9fr;gap:18px;margin-bottom:18px} .result-grid{grid-template-columns:1fr 1.25fr}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 8px 20px rgba(20,58,97,.05)}
 .head{padding:18px 20px;border-bottom:1px solid var(--line);background:#f9fbfe} .head h2{margin:0 0 6px;font-size:20px} .head p{margin:0;color:var(--muted)}
@@ -19,7 +18,7 @@ thead th{position:sticky;top:0;background:#eef4fb;z-index:2} .empty{color:#91a3b
 .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px} .secondary{border:1px solid #b9cde2;background:#fff;color:var(--accent);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700}
 @media (max-width:980px){.grid-top,.result-grid{grid-template-columns:1fr} .container{padding:14px} .hero h1{font-size:26px}}
 </style></head><body><div class="container">
-<section class="hero"><h1>Portal de Horarios de la Carrera de Ingeniería Ambiental 2026</h1><p>Consulta rápida por docente o por nivel. </p></section>
+<section class="hero"><h1>Portal de Horarios CIA 2026</h1><p>Consulta rápida por docente o por nivel. Nombres homogeneizados sin tildes y títulos normalizados.</p></section>
 <section class="grid-top">
 <div class="card"><div class="head"><h2>Búsqueda por docente</h2><p>Escriba apellido o nombre. La búsqueda ignora tildes, puntos y variaciones comunes.</p></div>
 <div class="body"><label for="teacherSearch">Docente</label><input id="teacherSearch" list="teacherOptions" placeholder="Ejemplo: MEJIA, ALBUJA, GUANUCHI..."/><datalist id="teacherOptions"></datalist><div class="small">Consejo: puede escribir solo una parte del apellido.</div></div></div>
